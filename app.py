@@ -149,24 +149,20 @@ elif page == "Safety Timer":
 
 
 # --- PAGE 3: BLUE LIGHT MAP (PDF ACCURACY) ---
+# --- PAGE 3: BLUE LIGHT MAP (TIMES & NO PATHS) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
-    st.write("Zoom in to see exact stop locations and paths.")
+    st.write("Click on a stop to see schedule information.")
     
-    # 1. Schedule Information Section (More Legible)
+    # 1. Schedule Information Section
     st.subheader("🚌 Night Shuttle Schedule")
-    
-    # Use columns for compact layout
     col1, col2 = st.columns(2)
-    
     with col1:
         st.markdown("**North Loop (N)**")
         st.caption("7:45 PM - 2:15 AM | Every 30 mins")
-        
     with col2:
         st.markdown("**South Loop (S)**")
         st.caption("7:30 PM - 3:00 AM | Every 30 mins")
-        
     st.divider()
 
     # 2. Initialize Map (Sproul Plaza Center)
@@ -184,28 +180,27 @@ elif page == "Berkeley Blue Lights":
         icon=folium.Icon(color="red", icon="shield", prefix="fa")
     ).add_to(m)
 
-    # 4. Define and Pin Shuttle Stops based on PDF
-    # Verified names and locations from official map
+    # 4. Define and Pin Shuttle Stops
     stops = [
-        {"num": "N01", "name": "Moffitt Library (University Dr)", "loc": [37.8727, -122.2606]},
+        {"num": "N01", "name": "Moffitt Library", "loc": [37.8727, -122.2606]},
         {"num": "N02", "name": "West Circle", "loc": [37.8719, -122.2587]},
         {"num": "N03", "name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
         {"num": "N04", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
-        {"num": "N05", "name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600]},
-        {"num": "N06", "name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573]},
+        {"num": "N05", "name": "North Gate", "loc": [37.8753, -122.2600]},
+        {"num": "N06", "name": "Cory Hall", "loc": [37.8752, -122.2573]},
         {"num": "N07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547]},
         {"num": "N08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546]},
-        {"num": "S09", "name": "Unit 3 (Channing & Telegraph)", "loc": [37.8678, -122.2592]},
-        {"num": "S10", "name": "Martinez Commons (Bancroft)", "loc": [37.8675, -122.2562]},
-        {"num": "S11", "name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530]},
-        {"num": "S12", "name": "Unit 2 (College & Haste)", "loc": [37.8655, -122.2548]},
-        {"num": "S13", "name": "International House (Piedmont)", "loc": [37.8708, -122.2527]},
+        {"num": "S09", "name": "Unit 3", "loc": [37.8678, -122.2592]},
+        {"num": "S10", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
+        {"num": "S11", "name": "Unit 1", "loc": [37.8675, -122.2530]},
+        {"num": "S12", "name": "Unit 2", "loc": [37.8655, -122.2548]},
+        {"num": "S13", "name": "International House", "loc": [37.8708, -122.2527]},
         {"num": "S14", "name": "Channing Circle", "loc": [37.8673, -122.2519]},
         {"num": "S15", "name": "Warring & Channing", "loc": [37.8672, -122.2505]},
         {"num": "S16", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505]},
         {"num": "S17", "name": "Piedmont & Bancroft", "loc": [37.8708, -122.2527]},
-        {"num": "S18", "name": "Martinez Commons (Channing)", "loc": [37.8675, -122.2562]},
-        {"num": "S19", "name": "Unit 1 (Channing)", "loc": [37.8675, -122.2530]},
+        {"num": "S18", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
+        {"num": "S19", "name": "Unit 1", "loc": [37.8675, -122.2530]},
         {"num": "S20", "name": "RSF/Tang Center", "loc": [37.8693, -122.2625]},
         {"num": "S21", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680]},
         {"num": "N22", "name": "Shattuck & University", "loc": [37.8715, -122.2682]},
@@ -213,35 +208,22 @@ elif page == "Berkeley Blue Lights":
         {"num": "N24", "name": "Moffitt Library", "loc": [37.8727, -122.2606]}
     ]
     for stop in stops:
-        # Color code based on Route Prefix (N for North, S for South)
+        # Color code based on Route Prefix
         icon_color = "purple" if stop["num"].startswith("N") else "darkpurple"
+        
+        # Update popup to show frequency
+        popup_text = f"<b>Stop {stop['num']}:</b> {stop['name']}<br><i>Frequency: Every 30 mins</i>"
+        
         folium.Marker(
             stop["loc"],
-            popup=f"<b>Stop {stop['num']}:</b> {stop['name']}",
+            popup=popup_text,
             tooltip=stop["name"],
             icon=folium.Icon(color=icon_color, icon="bus", prefix="fa")
         ).add_to(m)
         
-    # 5. Add Pathways (Polylines based on map routes)
-    # North Loop Path (Clockwise - Purple)
-    north_path = [
-        [37.8727, -122.2606], [37.8719, -122.2587], [37.8735, -122.2670],
-        [37.8701, -122.2681], [37.8753, -122.2600], [37.8752, -122.2573],
-        [37.8749, -122.2547], [37.8738, -122.2546], [37.8727, -122.2606]
-    ]
-    folium.PolyLine(north_path, color="purple", weight=4, opacity=0.8, tooltip="North Loop (N)").add_to(m)
-
-    # South Loop Path (Counter-Clockwise - Dark Purple)
-    south_path = [
-        [37.8678, -122.2592], [37.8675, -122.2562], [37.8675, -122.2530],
-        [37.8655, -122.2548], [37.8708, -122.2527], [37.8673, -122.2519],
-        [37.8672, -122.2505], [37.8683, -122.2505], [37.8693, -122.2625],
-        [37.8680, -122.2680], [37.8715, -122.2682], [37.8727, -122.2606],
-        [37.8678, -122.2592]
-    ]
-    folium.PolyLine(south_path, color="darkpurple", weight=4, opacity=0.8, tooltip="South Loop (S)").add_to(m)
-
-    # 6. Temporary Closure Note from PDF
+    # 5. REMOVED PATHWAYS (Polylines)
+    
+    # 6. Temporary Closure Note
     st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
 
     # 7. Pin: Blue Light Phone Locations
@@ -270,8 +252,8 @@ elif page == "Berkeley Blue Lights":
     st.markdown("""
     ### Legend
     * 🔴 **Red Shield:** UCPD Police Station
-    * 🟣 **Purple Line/Bus:** North Loop (N)
-    * 🟣 **Dark Purple Line/Bus:** South Loop (S)
+    * 🟣 **Purple Bus:** North Loop Stop (N)
+    * 🟣 **Dark Purple Bus:** South Loop Stop (S)
     * 🔵 **Blue Circle:** Blue Light Phone
     """)
 
