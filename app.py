@@ -394,8 +394,48 @@ elif page == "Exit Phrase Generator":
     """)
     # ----------------------------------------
 
+# --- PAGE 6: SAFETY CHATBOT (UPDATED) ---
 elif page == "Safety Chatbot":
     st.title("🤖 AI Safety Assistant")
-    st.text_input("Describe your situation:")
+    st.write("Describe your situation or select a quick option below.")
+    
+    # 1. Quick Select Buttons for immediate situations
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("🚨 Being Followed"):
+            st.session_state.chat_query = "I am being followed"
+        if st.button("🔒 Locked Out/In"):
+            st.session_state.chat_query = "I am locked out of my dorm"
+    with col2:
+        if st.button("💡 Lost at Night"):
+            st.session_state.chat_query = "I am lost and it is dark"
+        if st.button("😨 Feeling Unsafe"):
+            st.session_state.chat_query = "I feel unsafe in my current location"
+
+    # 2. Text Input for custom situations
+    user_input = st.text_input("Or describe your situation:", value=st.session_state.get('chat_query', ''))
+    
+    # 3. Action Button
     if st.button("Get Safety Plan"):
-        st.info("Head toward the nearest lit building or Blue Light phone.")
+        if user_input:
+            st.subheader("Your Action Plan")
+            
+            # 4. Context-Aware Advice Generator
+            if "followed" in user_input.lower():
+                st.warning("⚠️ **Immediate Action:** Go to a populated area (a store, restaurant) or a Blue Light phone. Do not go home. Call UCPD.")
+                st.link_button("👮 Call UCPD Now", "tel:5106423333")
+            elif "lost" in user_input.lower() or "dark" in user_input.lower():
+                st.info("🗺️ **Action Plan:** Open the 'Berkeley Blue Lights' page to find the nearest stop for the Night Safety Shuttle.")
+                st.link_button("🚌 View Shuttle Map", "javascript:window.location.hash='Berkeley Blue Lights';")
+            elif "unsafe" in user_input.lower():
+                st.warning("⚠️ **Action Plan:** Trust your gut. Move to a bright, crowded area. Request a Bearwalk companion.")
+                st.link_button("🚶 Request Bearwalk", "tel:5106429255")
+            else:
+                st.info("💡 **Action Plan:** Stay calm. Find a brightly lit area. Utilize your emergency contacts if necessary.")
+                st.link_button("📞 Call Primary Contact", f"tel:{st.session_state.primary_contact}")
+        else:
+            st.error("Please describe your situation or select a quick option.")
+            
+    # Reset query state after use
+    if 'chat_query' in st.session_state:
+        del st.session_state.chat_query
