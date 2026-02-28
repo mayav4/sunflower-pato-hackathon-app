@@ -153,12 +153,20 @@ elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
     st.write("Zoom in to see exact stop locations and paths.")
     
-    # 1. Schedule Information Section
+    # 1. Schedule Information Section (More Legible)
     st.subheader("🚌 Night Shuttle Schedule")
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Frequency", "Every 30 Mins")
-    col2.metric("North Loop (N)", "7:45 PM - 2:15 AM")
-    col3.metric("South Loop (S)", "7:30 PM - 3:00 AM")
+    
+    # Use columns for compact layout
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("**North Loop (N)**")
+        st.caption("7:45 PM - 2:15 AM | Every 30 mins")
+        
+    with col2:
+        st.markdown("**South Loop (S)**")
+        st.caption("7:30 PM - 3:00 AM | Every 30 mins")
+        
     st.divider()
 
     # 2. Initialize Map (Sproul Plaza Center)
