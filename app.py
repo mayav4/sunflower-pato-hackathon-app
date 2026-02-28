@@ -108,50 +108,59 @@ elif page == "Safety Timer":
 elif page == "Berkeley Blue Lights":
     import pandas as pd
 
-    st.title("🗺️ Safety Map of Campus Resources")
+    st.title("🗺️ UC Berkeley Safety + Night Shuttle Map")
     st.write("""
     This map shows approximate locations of:
-    - 🔵 Blue light emergency phones  
-    - 🚏 Local bus stops  
-    - 🚌 Night shuttle area  
-    - 👮 Campus police
+    - 🔵 Blue light emergency phones
+    - 🚌 Night Safety Shuttle stops
+    - 👮 Campus Safety resources
+    - 🚇 Transit (BART & buses)
     """)
 
-    # Make a DataFrame of locations
+    # Approximate locations including night shuttle stops
     data = pd.DataFrame({
         "lat": [
-            37.8717,  # Sproul Plaza
-            37.8704,  # Memorial Glade
-            37.8726,  # West Circle
-            37.8730,  # Evans Hall
-            37.8721,  # Campus Police (UCPD)
+            37.8704,  # Night Shuttle: Memorial Glade / Moffitt
+            37.8726,  # Night Shuttle: West Circle
+            37.8730,  # Night Shuttle: Evans Hall / Hearst
+            37.8688,  # Transit stop: Shattuck @ Allston
+            37.8668,  # Transit stop: Piedmont & Bancroft
             37.8712,  # Downtown Berkeley BART
-            37.8697,  # Bus stop (Bancroft & Telegraph)
-            37.8714,  # Bus stop (University & Shattuck)
-            37.8700   # Night shuttle area (approx)
+            37.8717,  # Blue light emergency (Sproul Plaza)
+            37.8721   # Campus Police/UCPD
         ],
         "lon": [
-            -122.2591,
             -122.2690,
             -122.2680,
             -122.2730,
-            -122.2591,
+            -122.2674,
+            -122.2550,
             -122.2681,
-            -122.2588,
-            -122.2548,
-            -122.2620
+            -122.2591,
+            -122.2591
         ]
     })
 
-    # Now run st.map with the DataFrame
     st.map(data)
 
-    st.subheader("📍 What the Pins Represent")
+    st.subheader("📍 Shuttle & Safety Locations Explained")
+
     st.write("""
-    🔵 Blue light phones  
-    🚏 Bus stops  
-    🚌 Night shuttle approximate stop  
-    👮 Campus police / safety resources
+    🚌 **Night Safety Shuttle stops (approximate):**
+    - Memorial Glade / Moffitt Library
+    - West Circle
+    - Evans Hall / Hearst Mining Circle
+    - Shattuck @ Allston (near bus/BART access)
+    - Piedmont & Bancroft (residential area)
+
+    🔵 **Blue light emergency phones:** Example campus phone near Sproul Plaza  
+    👮 **Campus safety services:** UC Berkeley Police services area  
+    🚇 **Downtown Berkeley BART:** Major transit connection point
+    """)
+
+    st.info("""
+    ⚠ This map is a prototype with approximate markers for demo purposes.
+    For real navigation, check official Bear Transit and campus safety apps.
     """)
 # --- PAGE 4: PHRASE GENERATOR ---
 elif page == "Exit Phrase Generator":
