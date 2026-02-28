@@ -154,14 +154,6 @@ elif page == "Check-in Timer":
                 st.session_state.emergency_triggered = True
                 st.rerun()
 
-# --- PAGE 3: BLUE LIGHT MAP (NO PATH LINES) ---
-I have updated the map to include the arrival times in the hover popups for each stop based on the provided PDF.
-
-Updated Code for app.py
-Replace the entire elif page == "Berkeley Blue Lights": section with this updated version:
-
-Python
-
 # --- PAGE 3: BLUE LIGHT MAP (WITH INTERACTIVE SCHEDULES) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
