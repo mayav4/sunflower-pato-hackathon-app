@@ -34,12 +34,24 @@ if page == "Homepage":
     st.markdown("<p style='text-align: left; color: #9b59b6; font-size: 14px;'>⬆️ Click the arrow in the upper left corner to open the menu</p>", unsafe_allow_html=True)
     
     logo_path = "luma_logo.jpeg"
-    col_left, col_logo, col_right = st.columns([1, 1, 1])
+    
+    # Using a 1:2:1 ratio helps the middle column stay centered on smaller screens
+    col_left, col_logo, col_right = st.columns([1, 2, 1])
     
     with col_logo:
         if os.path.exists(logo_path):
-            # Centered and sized to maintain resolution quality
-            st.image(logo_path, width=160, use_container_width=False)
+            # We wrap the image in a centered div to force mobile centering
+            st.markdown(
+                f"""
+                <div style="display: flex; justify-content: center;">
+                    <img src="https://raw.githubusercontent.com/{st.secrets.get('github_username', 'your_user')}/{st.secrets.get('github_repo', 'your_repo')}/main/{logo_path}" 
+                         width="160" style="border-radius: 20px;">
+                </div>
+                """, 
+                unsafe_allow_html=True
+            )
+            # If the HTML above doesn't load your local file, use this standard line instead:
+            # st.image(logo_path, width=160)
         else:
             st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
 
