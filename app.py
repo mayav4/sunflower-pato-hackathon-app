@@ -35,23 +35,13 @@ if page == "Homepage":
     
     logo_path = "luma_logo.jpeg"
     
-    # Using a 1:2:1 ratio helps the middle column stay centered on smaller screens
+    # Simple 3-column layout (Standard Streamlit)
     col_left, col_logo, col_right = st.columns([1, 2, 1])
     
     with col_logo:
         if os.path.exists(logo_path):
-            # We wrap the image in a centered div to force mobile centering
-            st.markdown(
-                f"""
-                <div style="display: flex; justify-content: center;">
-                    <img src="https://raw.githubusercontent.com/{st.secrets.get('github_username', 'your_user')}/{st.secrets.get('github_repo', 'your_repo')}/main/{logo_path}" 
-                         width="160" style="border-radius: 20px;">
-                </div>
-                """, 
-                unsafe_allow_html=True
-            )
-            # If the HTML above doesn't load your local file, use this standard line instead:
-            # st.image(logo_path, width=160)
+            # This will now load correctly because it uses the local path
+            st.image(logo_path, width=160)
         else:
             st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
 
@@ -73,7 +63,7 @@ if page == "Homepage":
 
     st.divider()
 
-    # 3. SETUP INSTRUCTIONS (Updated for new Sidebar order)
+    # 3. SETUP INSTRUCTIONS
     st.subheader("👤 Personal Safety Setup")
     st.info("""
     **To add your emergency contacts:**
@@ -92,7 +82,6 @@ if page == "Homepage":
     """)
 
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
-
 # --- PAGE 2: CHECK-IN TIMER ---
 elif page == "Check-in Timer":
     if 'timer_active' not in st.session_state: st.session_state.timer_active = False
