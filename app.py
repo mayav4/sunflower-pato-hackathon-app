@@ -25,7 +25,7 @@ if page == "Home & Info":
     
     # Luma Logo/Graphic
     # If your file is named logo.png
-    st.image("luma_logo.png", width=150)
+    st.image("luma_logo.jpeg", width=150)
     
     st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark.</h3>", unsafe_allow_html=True)
 
