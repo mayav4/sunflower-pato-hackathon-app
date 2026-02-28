@@ -119,13 +119,6 @@ elif page == "Safety Timer":
                 st.balloons()
                 
 # --- PAGE 3: BLUE LIGHT MAP ---
-Replace the entire section under elif page == "Berkeley Blue Lights": in your app.py file with the code below.
-
-This updated version uses the tiles="CartoDB dark_matter" setting, which will fix the blank/black screen issue and make the map look much better for a night safety app.
-
-Python
-
-# --- PAGE 3: BLUE LIGHT MAP (FIXED) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
     st.write("Zoom in to see exact stop locations.")
