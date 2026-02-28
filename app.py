@@ -16,7 +16,7 @@ st.markdown("""
 
 # 2. Sidebar Navigation
 st.sidebar.title("🛡️ NightWalk Menu")
-page = st.sidebar.radio("Go to:", ["Home & Info", "Safety Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts"])
+page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"])
 
 # --- PAGE 1: HOME ---
 if page == "Home & Info":
