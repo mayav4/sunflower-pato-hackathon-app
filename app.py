@@ -49,7 +49,7 @@ if page == "Home & Info":
     st.markdown("---")
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
-# --- PAGE 2: SAFETY TIMER (With Red Alert) ---
+# --- PAGE 2: SAFETY TIMER (Comforting Check-In) ---
 elif page == "Safety Timer":
     col_title, col_toggle = st.columns([3, 1])
     with col_title:
@@ -58,46 +58,46 @@ elif page == "Safety Timer":
         st.write("") 
         demo_mode = st.toggle("Demo Mode", value=False)
 
-    # Initialize session states if they don't exist
+    # State Management
     if 'timer_active' not in st.session_state:
         st.session_state.timer_active = False
     if 'emergency_triggered' not in st.session_state:
         st.session_state.emergency_triggered = False
 
-    # --- THE RED ALERT SCREEN ---
+    # --- THE COMFORTING YELLOW ALERT SCREEN ---
     if st.session_state.emergency_triggered:
-        # This CSS overrides the whole app's look to turn it bright red
+        # Using a soft Goldenrod yellow for a comforting but urgent look
         st.markdown("""
             <style>
             .stApp {
-                background-color: #ff4757 !important;
+                background-color: #f1c40f !important;
             }
-            h1, p { color: white !important; }
+            h1, h3, p { color: #2c3e50 !important; }
             </style>
-            <div style="text-align: center; padding: 50px; border: 5px solid white; border-radius: 20px;">
-                <h1 style="font-size: 50px;">🚨 ALERT TRIGGERED 🚨</h1>
-                <h3 style="color: white;">Emergency Contacts Notified</h3>
-                <p>GPS Coordinates Sent to UCPD Dispatch</p>
+            <div style="text-align: center; padding: 40px; border: 4px solid #2c3e50; border-radius: 20px;">
+                <h1 style="font-size: 40px;">🌙 Checking in...</h1>
+                <h3>We haven't heard from you in a bit.</h3>
+                <p style="font-size: 18px;"><b>Your primary emergency contact has been notified</b> that you might need a little extra support right now.</p>
             </div>
         """, unsafe_allow_html=True)
         
-        if st.button("❌ DISMISS & RESET"):
+        if st.button("💛 I'm Okay Now (Reset)"):
             st.session_state.emergency_triggered = False
             st.session_state.timer_active = False
             st.rerun()
         st.stop() 
 
     # --- NORMAL TIMER UI ---
-    st.write("Set your check-in frequency. If you don't respond, the screen will turn RED.")
+    st.write("Luma is here to walk with you. Set your check-in window below.")
     
     col_a, col_b = st.columns(2)
     with col_a:
         check_interval = st.selectbox("Check in every:", [1, 2, 5, 10], index=1, format_func=lambda x: f"{x} Mins")
     with col_b:
-        reaction_time = st.slider("Response window (seconds):", 5, 60, 10)
+        reaction_time = st.slider("Response window (seconds):", 5, 60, 15)
 
     if not st.session_state.timer_active:
-        if st.button("🚀 Start Protected Walk"):
+        if st.button("🚀 Start My Protected Walk"):
             st.session_state.timer_active = True
             st.rerun()
     else:
@@ -105,34 +105,36 @@ elif page == "Safety Timer":
             st.session_state.timer_active = False
             st.rerun()
 
-        # Phase 1: The Wait
+        # Phase 1: The Walking Wait
         wait_time = 5 if demo_mode else (check_interval * 60)
-        st.info("🚶 **Luma is monitoring...**")
+        st.info("✨ **Luma is here with you!**")
         progress_bar = st.progress(0)
         
         for i in range(wait_time):
             time.sleep(1)
             progress_bar.progress((i + 1) / wait_time)
         
-        # Phase 2: The Check-In
-        st.warning("⚠️ **ARE YOU SAFE? CHECK IN NOW!**")
+        # Phase 2: The Soft Check-In
+        st.markdown("<h3 style='text-align: center;'>Are you doing okay?</h3>", unsafe_allow_html=True)
         btn_placeholder = st.empty()
         safe_confirm = btn_placeholder.button("✅ I AM SAFE", key="checkin_btn")
         
         countdown_placeholder = st.empty()
         for s in range(reaction_time, -1, -1):
             if safe_confirm:
-                st.success("Safe! Resetting timer...")
+                st.success("Great! Let's keep going.")
                 time.sleep(1)
                 st.rerun()
             
-            # Show the shrinking countdown
-            countdown_placeholder.markdown(f"<h1 style='text-align: center; color: red; font-size: 80px;'>{s}</h1>", unsafe_allow_html=True)
+            # Using a purple color for the countdown to stay on brand
+            countdown_placeholder.markdown(f"<h1 style='text-align: center; color: #9b59b6; font-size: 60px;'>{s}</h1>", unsafe_allow_html=True)
             time.sleep(1)
             
             if s == 0:
                 st.session_state.emergency_triggered = True
                 st.rerun()
+
+
 # --- PAGE 3: BLUE LIGHT MAP (PDF ACCURACY) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
