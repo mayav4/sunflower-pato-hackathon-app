@@ -195,10 +195,25 @@ elif page == "Berkeley Blue Lights":
     m = folium.Map(location=[37.8715, -122.2590], zoom_start=15, tiles="CartoDB dark_matter")
     st_folium(m, width=700, height=500)
 
+# --- PAGE 4: EXIT PHRASES ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
+    phrases = ["My roommate is locked out!", "My Uber is here!", "I left my stove on!"]
+    
     if st.button("Generate"):
-        st.success(f"**Try:** \"{random.choice(['My Uber is here!', 'Roommate is locked out!'])}\"")
+        st.success(f"**Try:** \"{random.choice(phrases)}\"")
+    
+    # --- ADD THIS SECTION UNDER THE BUTTON ---
+    st.markdown("---")
+    st.markdown("#### Try these ideas:")
+    st.markdown("""
+    * "My roommate is locked out!"
+    * "My Uber is here!"
+    * "I left my stove on!"
+    * "I need to meet someone at the dorms."
+    * "My phone is dying, I need to go charge it."
+    """)
+    # ----------------------------------------
 
 elif page == "Safety Chatbot":
     st.title("🤖 AI Safety Assistant")
