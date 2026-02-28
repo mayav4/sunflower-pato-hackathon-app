@@ -134,13 +134,6 @@ elif page == "Safety Timer":
                 st.session_state.emergency_triggered = True
                 st.rerun()
 # --- PAGE 3: BERKELEY BLUE LIGHTS ---
-To help users distinguish between the two routes on the map, I have added the Southside (S) and Northside (N) path lines, using purple for the North Loop and dark purple for the South Loop to match your marker colors.
-
-Updated Code for app.py
-Replace the entirety of your elif page == "Berkeley Blue Lights": section with this updated code.
-
-Python
-
 # --- PAGE 3: BLUE LIGHT MAP (PATHWAYS ADDED) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
