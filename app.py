@@ -198,7 +198,24 @@ elif page == "Berkeley Blue Lights":
 # --- PAGE 4: EXIT PHRASES ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
-    phrases = ["My roommate is locked out!", "My Uber is here!", "I left my stove on!"]
+    phrases = ["“I don’t know you. Please give me space.”
+
+“I’m not interested. Please stop following me.”
+
+“I’d like to be left alone.”
+
+“Please step back.”
+
+“I feel uncomfortable. I’m going to leave.”
+
+“I don’t want to talk. Have a good day.”
+“I need to meet someone. I have to go.”
+
+“I’m in a hurry.”
+
+“Excuse me.”
+
+(No explanation needed—just walk toward a safer area.)"]
     
     if st.button("Generate"):
         st.success(f"**Try:** \"{random.choice(phrases)}\"")
