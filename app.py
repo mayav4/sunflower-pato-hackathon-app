@@ -21,29 +21,31 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Sidebar Navigation
+# 2. Sidebar Navigation (Rearranged)
 st.sidebar.title("🛡️ Luma Menu")
 page = st.sidebar.radio(
     "Navigation", 
-    ["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"]
+    ["Homepage", "Emergency Contacts", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Safety Chatbot"]
 )
 
 # --- PAGE 1: HOMEPAGE ---
 if page == "Homepage":
-    st.markdown("<p style='text-align: left; color: #9b59b6; font-size: 14px;'>⬅️ Click the arrow in the upper left corner to open the menu</p>", unsafe_allow_html=True)
+    # 1. Sidebar Instruction with UP arrow
+    st.markdown("<p style='text-align: left; color: #9b59b6; font-size: 14px;'>⬆️ Click the arrow in the upper left corner to open the menu</p>", unsafe_allow_html=True)
     
     logo_path = "luma_logo.jpeg"
     col_left, col_logo, col_right = st.columns([1, 1, 1])
     
     with col_logo:
         if os.path.exists(logo_path):
+            # Centered and sized to maintain resolution quality
             st.image(logo_path, width=160, use_container_width=False)
         else:
             st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
 
     st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark ✨</h3>", unsafe_allow_html=True)
 
-    # Emergency Buttons Grid
+    # 2. Emergency Buttons Grid
     st.error("🆘 **Quick Help Section**")
     row1_col1, row1_col2 = st.columns(2)
     row2_col1, row2_col2 = st.columns(2)
@@ -59,13 +61,13 @@ if page == "Homepage":
 
     st.divider()
 
-    # 3. NEW INSTRUCTIONS SECTION
+    # 3. SETUP INSTRUCTIONS (Updated for new Sidebar order)
     st.subheader("👤 Personal Safety Setup")
     st.info("""
     **To add your emergency contacts:**
-    1. Open the **Side Menu** (top-left arrow ⬅️).
-    2. Select **'Emergency Contacts'**.
-    3. Enter your contact's information to ensure Luma can reach them if you miss a check-in.
+    1. Open the **Side Menu** (top-left arrow ⬆️).
+    2. Select **'Emergency Contacts'** (located right below Homepage).
+    3. Enter your contact's information so Luma knows who to alert.
     """)
 
     st.divider()
@@ -75,15 +77,6 @@ if page == "Homepage":
     st.markdown("""
     **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
     We are your light source in Berkeley, ensuring no student has to walk in the dark alone. 
-    """)
-
-    # 5. Feature Guide
-    st.markdown("### 🛠️ Feature Overview")
-    st.markdown("""
-    * **Check-in Timer:** Automated safety pings for your walk home.
-    * **Berkeley Blue Lights:** Interactive map of campus safety resources.
-    * **Exit Phrases:** Reliable excuses to leave uncomfortable situations.
-    * **Safety Chatbot:** AI-powered safety planning and advice.
     """)
 
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
