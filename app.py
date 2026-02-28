@@ -121,28 +121,88 @@ elif page == "Safety Timer":
 # --- PAGE 3: BERKELEY BLUE LIGHTS ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
+    st.write("Zoom in to see exact stop locations.")
+    
+    # 1. Schedule Information Section
     st.subheader("🚌 Night Shuttle Schedule")
     col1, col2, col3 = st.columns(3)
     col1.metric("Frequency", "Every 30 Mins")
-    col2.metric("North Loop", "7:45 PM - 2:15 AM")
-    col3.metric("South Loop", "7:30 PM - 3:00 AM")
+    col2.metric("North Loop (N)", "7:45 PM - 2:15 AM [cite: 4]")
+    col3.metric("South Loop (S)", "7:30 PM - 3:00 AM [cite: 6]")
     st.divider()
 
-    m = folium.Map(location=[37.8715, -122.2590], zoom_start=15, tiles="CartoDB dark_matter")
+    # 2. Initialize Map (Sproul Plaza Center)
+    m = folium.Map(
+        location=[37.8715, -122.2590], 
+        zoom_start=15,
+        tiles="CartoDB dark_matter"
+    )
 
-    folium.Marker([37.8698, -122.2595], popup="UCPD", icon=folium.Icon(color="red", icon="shield", prefix="fa")).add_to(m)
+    # 3. Pin: UCPD Police Station
+    folium.Marker(
+        [37.8698, -122.2595],
+        popup="<b>UCPD Headquarters</b><br>1 Sproul Hall (Basement)",
+        tooltip="Police Station",
+        icon=folium.Icon(color="red", icon="shield", prefix="fa")
+    ).add_to(m)
 
+    # 4. Pin: Bear Transit Night Shuttle Stops (Verified Locations) 
     stops = [
-        {"name": "Moffitt Library", "loc": [37.8727, -122.2606]},
         {"name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
-        {"name": "Unit 1", "loc": [37.8675, -122.2530]},
-        {"name": "Unit 2", "loc": [37.8655, -122.2548]},
-        {"name": "Unit 3", "loc": [37.8678, -122.2592]}
+        {"name": "Shattuck & University", "loc": [37.8715, -122.2682]},
+        {"name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
+        {"name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600]},
+        {"name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573]},
+        {"name": "Greek Theatre (Gayley & University Dr)", "loc": [37.8742, -122.2547]},
+        {"name": "International House (Piedmont & Bancroft)", "loc": [37.8708, -122.2527]},
+        {"name": "Clark Kerr Horseshoe", "loc": [37.8672, -122.2460]},
+        {"name": "Unit 2 (Piedmont)", "loc": [37.8655, -122.2548]},
+        {"name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530]},
+        {"name": "Unit 3 (Durant & Telegraph)", "loc": [37.8678, -122.2592]},
+        {"name": "Moffitt Library", "loc": [37.8727, -122.2606]},
+        {"name": "Mining Circle", "loc": [37.8741, -122.2576]},
+        {"name": "RSF/Tang Center", "loc": [37.8693, -122.2625]}
     ]
     for stop in stops:
-        folium.Marker(stop["loc"], popup=stop["name"], icon=folium.Icon(color="purple", icon="bus", prefix="fa")).add_to(m)
+        folium.Marker(
+            stop["loc"],
+            popup=f"<b>Stop:</b> {stop['name']}",
+            tooltip=stop["name"],
+            icon=folium.Icon(color="purple", icon="bus", prefix="fa")
+        ).add_to(m)
+        
+    # Temporary Closure Note 
+    st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
 
+    # 5. Pin: Blue Light Phone Locations
+    blue_lights = [
+        {"loc": [37.8715, -122.2605], "name": "Doe Library"},
+        {"loc": [37.8695, -122.2595], "name": "Sproul Plaza"},
+        {"loc": [37.8752, -122.2592], "name": "North Gate"},
+        {"loc": [37.8655, -122.2538], "name": "Unit 2"},
+        {"loc": [37.8735, -122.2580], "name": "Mining Circle"},
+        {"loc": [37.8680, -122.2685], "name": "BART Station"},
+        {"loc": [37.8745, -122.2540], "name": "Greek Theatre"}
+    ]
+    for bl in blue_lights:
+        folium.CircleMarker(
+            location=bl["loc"],
+            radius=8,
+            popup=f"<b>Blue Light Phone</b><br>{bl['name']}",
+            color="blue",
+            fill=True,
+            fill_color="blue"
+        ).add_to(m)
+
+    # 6. Render Map
     st_folium(m, width=700, height=500)
+    
+    st.markdown("""
+    ### Legend
+    * 🔴 **Red Shield:** UCPD Police Station
+    * 🟣 **Purple Bus:** Night Shuttle Stop
+    * 🔵 **Blue Circle:** Blue Light Phone
+    """)
 
 # --- PAGES 4, 5, 6 ---
 elif page == "Exit Phrase Generator":
