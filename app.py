@@ -119,9 +119,17 @@ elif page == "Safety Timer":
                 st.session_state.timer_active = False
 
 # --- PAGE 3: BERKELEY BLUE LIGHTS ---
+To help users distinguish between the two routes on the map, I have added the Southside (S) and Northside (N) path lines, using purple for the North Loop and dark purple for the South Loop to match your marker colors.
+
+Updated Code for app.py
+Replace the entirety of your elif page == "Berkeley Blue Lights": section with this updated code.
+
+Python
+
+# --- PAGE 3: BLUE LIGHT MAP (PATHWAYS ADDED) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
-    st.write("Zoom in to see exact stop locations.")
+    st.write("Zoom in to see exact stop locations and paths.")
     
     # 1. Schedule Information Section
     st.subheader("🚌 Night Shuttle Schedule")
@@ -146,21 +154,20 @@ elif page == "Berkeley Blue Lights":
         icon=folium.Icon(color="red", icon="shield", prefix="fa")
     ).add_to(m)
 
-    # 4. Pin: Bear Transit Night Shuttle Stops (Verified Locations from PDF)
-    # Stop numbers added for reference based on provided map
+    # 4. Define and Pin Shuttle Stops
     stops = [
-        {"num": "01", "name": "Moffitt Library (University Dr)", "loc": [37.8727, -122.2606]},
+        {"num": "01", "name": "Moffitt Library", "loc": [37.8727, -122.2606]},
         {"num": "02", "name": "West Circle", "loc": [37.8719, -122.2587]},
         {"num": "03", "name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
         {"num": "04", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
-        {"num": "05", "name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600]},
-        {"num": "06", "name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573]},
+        {"num": "05", "name": "North Gate", "loc": [37.8753, -122.2600]},
+        {"num": "06", "name": "Cory Hall", "loc": [37.8752, -122.2573]},
         {"num": "07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547]},
         {"num": "08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546]},
-        {"num": "09", "name": "Unit 3 (Channing & Telegraph)", "loc": [37.8678, -122.2592]},
+        {"num": "09", "name": "Unit 3", "loc": [37.8678, -122.2592]},
         {"num": "10", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
-        {"num": "11", "name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530]},
-        {"num": "12", "name": "Unit 2 (College & Plaste)", "loc": [37.8655, -122.2548]},
+        {"num": "11", "name": "Unit 1", "loc": [37.8675, -122.2530]},
+        {"num": "12", "name": "Unit 2", "loc": [37.8655, -122.2548]},
         {"num": "13", "name": "International House", "loc": [37.8708, -122.2527]},
         {"num": "14", "name": "Channing Circle", "loc": [37.8673, -122.2519]},
         {"num": "15", "name": "Warring & Channing", "loc": [37.8672, -122.2505]},
@@ -182,10 +189,29 @@ elif page == "Berkeley Blue Lights":
             icon=folium.Icon(color="purple", icon="bus", prefix="fa")
         ).add_to(m)
         
-    # Temporary Closure Note from Map
+    # 5. Add Pathways (Polylines)
+    # North Loop (Purple)
+    north_path = [
+        [37.8727, -122.2606], [37.8719, -122.2587], [37.8735, -122.2670],
+        [37.8701, -122.2681], [37.8753, -122.2600], [37.8752, -122.2573],
+        [37.8749, -122.2547], [37.8738, -122.2546], [37.8727, -122.2606]
+    ]
+    folium.PolyLine(north_path, color="purple", weight=4, opacity=0.8, tooltip="North Loop (N)").add_to(m)
+
+    # South Loop (Dark Purple)
+    south_path = [
+        [37.8678, -122.2592], [37.8675, -122.2562], [37.8675, -122.2530],
+        [37.8655, -122.2548], [37.8708, -122.2527], [37.8673, -122.2519],
+        [37.8672, -122.2505], [37.8683, -122.2505], [37.8693, -122.2625],
+        [37.8680, -122.2680], [37.8715, -122.2682], [37.8727, -122.2606],
+        [37.8678, -122.2592]
+    ]
+    folium.PolyLine(south_path, color="darkpurple", weight=4, opacity=0.8, tooltip="South Loop (S)").add_to(m)
+
+    # 6. Temporary Closure Note
     st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
 
-    # 5. Pin: Blue Light Phone Locations
+    # 7. Pin: Blue Light Phone Locations
     blue_lights = [
         {"loc": [37.8715, -122.2605], "name": "Doe Library"},
         {"loc": [37.8695, -122.2595], "name": "Sproul Plaza"},
@@ -205,13 +231,14 @@ elif page == "Berkeley Blue Lights":
             fill_color="blue"
         ).add_to(m)
 
-    # 6. Render Map
+    # 8. Render Map
     st_folium(m, width=700, height=500)
     
     st.markdown("""
     ### Legend
     * 🔴 **Red Shield:** UCPD Police Station
-    * 🟣 **Purple Bus:** Night Shuttle Stop
+    * 🟣 **Purple Line/Bus:** North Loop (N)
+    * 🟣 **Dark Purple Line/Bus:** South Loop (S)
     * 🔵 **Blue Circle:** Blue Light Phone
     """)
 
