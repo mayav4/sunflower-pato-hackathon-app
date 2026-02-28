@@ -49,28 +49,53 @@ if page == "Home & Info":
     st.markdown("---")
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
-# --- PAGE 2: UPDATED CHECK-IN TIMER ---
+# --- PAGE 2: SAFETY TIMER (With Red Alert) ---
 elif page == "Safety Timer":
     col_title, col_toggle = st.columns([3, 1])
     with col_title:
         st.title("⏱️ Safety Check-In")
     with col_toggle:
         st.write("") 
-        demo_mode = st.toggle("Demo Mode", value=False, help="Uses 5-second intervals for testing.")
+        demo_mode = st.toggle("Demo Mode", value=False)
 
-    st.write("Luma will periodically check if you are safe. If you don't respond in time, your emergency contacts are alerted.")
-
-    # User Configuration
-    col_a, col_b = st.columns(2)
-    with col_a:
-        check_interval = st.selectbox("Check in every:", [1, 2, 5, 10], index=1, format_func=lambda x: f"{x} Minutes")
-    with col_b:
-        reaction_time = st.slider("Seconds to respond:", 5, 60, 15)
-
+    # Initialize session states if they don't exist
     if 'timer_active' not in st.session_state:
         st.session_state.timer_active = False
+    if 'emergency_triggered' not in st.session_state:
+        st.session_state.emergency_triggered = False
 
-    # Start/Stop Buttons
+    # --- THE RED ALERT SCREEN ---
+    if st.session_state.emergency_triggered:
+        # This CSS overrides the whole app's look to turn it bright red
+        st.markdown("""
+            <style>
+            .stApp {
+                background-color: #ff4757 !important;
+            }
+            h1, p { color: white !important; }
+            </style>
+            <div style="text-align: center; padding: 50px; border: 5px solid white; border-radius: 20px;">
+                <h1 style="font-size: 50px;">🚨 ALERT TRIGGERED 🚨</h1>
+                <h3 style="color: white;">Emergency Contacts Notified</h3>
+                <p>GPS Coordinates Sent to UCPD Dispatch</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("❌ DISMISS & RESET"):
+            st.session_state.emergency_triggered = False
+            st.session_state.timer_active = False
+            st.rerun()
+        st.stop() 
+
+    # --- NORMAL TIMER UI ---
+    st.write("Set your check-in frequency. If you don't respond, the screen will turn RED.")
+    
+    col_a, col_b = st.columns(2)
+    with col_a:
+        check_interval = st.selectbox("Check in every:", [1, 2, 5, 10], index=1, format_func=lambda x: f"{x} Mins")
+    with col_b:
+        reaction_time = st.slider("Response window (seconds):", 5, 60, 10)
+
     if not st.session_state.timer_active:
         if st.button("🚀 Start Protected Walk"):
             st.session_state.timer_active = True
@@ -80,44 +105,34 @@ elif page == "Safety Timer":
             st.session_state.timer_active = False
             st.rerun()
 
-        # Logic for Demo vs Real Timing
+        # Phase 1: The Wait
         wait_time = 5 if demo_mode else (check_interval * 60)
-        
-        # 1. THE WALKING PHASE
-        st.info("🚶 **Luma is watching...** Next check-in in progress.")
+        st.info("🚶 **Luma is monitoring...**")
         progress_bar = st.progress(0)
+        
         for i in range(wait_time):
             time.sleep(1)
             progress_bar.progress((i + 1) / wait_time)
         
-        # 2. THE CHECK-IN PHASE
-        st.warning("🚨 **TIME TO CHECK IN!**")
-        st.write(f"Press the button within **{reaction_time}** seconds.")
-        
-        # Create a placeholder for the "I am safe" button so it can disappear
+        # Phase 2: The Check-In
+        st.warning("⚠️ **ARE YOU SAFE? CHECK IN NOW!**")
         btn_placeholder = st.empty()
         safe_confirm = btn_placeholder.button("✅ I AM SAFE", key="checkin_btn")
         
         countdown_placeholder = st.empty()
-        
         for s in range(reaction_time, -1, -1):
             if safe_confirm:
-                st.success("Confirmed! Continuing protection...")
+                st.success("Safe! Resetting timer...")
                 time.sleep(1)
-                st.rerun() # Restarts the cycle
+                st.rerun()
             
-            # Update countdown display
-            color = "red" if s < 5 else "white"
-            countdown_placeholder.markdown(f"<h1 style='text-align: center; color: {color};'>{s}s</h1>", unsafe_allow_html=True)
+            # Show the shrinking countdown
+            countdown_placeholder.markdown(f"<h1 style='text-align: center; color: red; font-size: 80px;'>{s}</h1>", unsafe_allow_html=True)
             time.sleep(1)
             
             if s == 0:
-                btn_placeholder.empty()
-                st.error("🚨 **NO RESPONSE DETECTED!**")
-                st.write("Emergency contacts have been pinged with your coordinates.")
-                st.balloons()
-                st.session_state.timer_active = False
-
+                st.session_state.emergency_triggered = True
+                st.rerun()
 # --- PAGE 3: BERKELEY BLUE LIGHTS ---
 To help users distinguish between the two routes on the map, I have added the Southside (S) and Northside (N) path lines, using purple for the North Loop and dark purple for the South Loop to match your marker colors.
 
