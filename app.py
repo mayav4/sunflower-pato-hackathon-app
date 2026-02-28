@@ -104,8 +104,9 @@ elif page == "Safety Map":
     # 3. Create the Map Center (Sproul Plaza) using Content-Rich Dark Tiles
     m = folium.Map(
         location=[37.8715, -122.2590], 
-        zoom_start=15, 
-        tiles="CartoDB dark_matter"  # Fixes the black page issue
+        zoom_start=15,
+        # 'OpenStreetMap' is the standard, 'CartoDB positron' is light mode
+        tiles="OpenStreetMap" 
     )
 
     # 4. Marker: UCPD Police Station
