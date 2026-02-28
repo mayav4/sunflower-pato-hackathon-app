@@ -78,7 +78,7 @@ elif page == "Safety Timer":
             <div style="text-align: center; padding: 40px; border: 4px solid #9b59b6; border-radius: 20px;">
                 <h1 style="font-size: 40px;">🌙 Checking in...</h1>
                 <h3>We haven't heard from you in a bit.</h3>
-                <p style="font-size: 18px;"><b>Your primary emergency contact has been notified</b> that you might need a little extra support right now.</p>
+                <p style="font-size: 18px;"><b>Your primary emergency contact has been notified</b> that you might need help right now.</p>
             </div>
         """, unsafe_allow_html=True)
         
