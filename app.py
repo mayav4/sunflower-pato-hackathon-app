@@ -59,6 +59,11 @@ if page == "Home & Info":
 # --- PAGE 2: TIMER ---
 elif page == "Safety Timer":
     st.title("⏱️ Safety Check-In")
+    
+    # --- TESTING OVERRIDE (Comment out the line below for the real demo!) ---
+    test_mode = True  # Set to False or comment out to use real minutes
+    # -----------------------------------------------------------------------
+
     st.write("Heading out? Set your walk time. If the clock hits zero, we alert your emergency contacts.")
     
     mins = st.selectbox("How many minutes is your walk?", [1, 5, 10, 15, 30], index=0)
@@ -76,7 +81,9 @@ elif page == "Safety Timer":
         st.session_state.timer_running = True
 
     if st.session_state.timer_running:
-        seconds = mins * 60
+        # LOGIC: If test_mode is True, it uses 5 seconds. Otherwise, it uses mins * 60.
+        seconds = 5 if test_mode else (mins * 60)
+        
         progress_bar = st.progress(1.0)
         status_text = st.empty()
         
@@ -86,16 +93,18 @@ elif page == "Safety Timer":
                 status_text.success("🎉 You're safe! Timer deactivated.")
                 break
             
-            percent_filled = i / seconds
+            percent_filled = i / seconds if seconds > 0 else 0
             progress_bar.progress(percent_filled)
+            
             display_color = "red" if i <= 10 else "white"
             status_text.markdown(f"<h1 style='text-align: center; color: {display_color};'>{i//60:02d}:{i%60:02d}</h1>", unsafe_allow_html=True)
+            
             time.sleep(1)
             
             if i == 0:
                 st.session_state.timer_running = False
                 st.error("🚨 ALERT: Timer expired! Emergency contacts have been pinged.")
-
+                st.balloons() # Added balloons so you can see the "Alert" trigger clearly
 # --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Safety Map":
     st.header("📍 Interactive Night Safety Map")
