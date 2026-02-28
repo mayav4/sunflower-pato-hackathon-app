@@ -109,69 +109,42 @@ elif page == "Safety Timer":
 
 # --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Berkeley Blue Lights":
-    st.title("🚌 Night Safety Map & Schedules")
+    st.title("🛡️ UCPD Recommended Night Safety Map")
 
-    # 1. Operating Hours Tables
-    st.subheader("⏰ Operating Hours (Academic Year 2026)")
-    
-    col_n, col_s = st.columns(2)
-    
-    with col_n:
-        st.markdown("""
-        **Night Safety North (Z-Line)**
-        * *Clockwise Loop / Every 30m*
-        * **Mon-Fri:** 7:45 PM – 2:15 AM
-        * **Sat-Sun:** 6:45 PM – 3:45 AM
-        """)
-        
-    with col_s:
-        st.markdown("""
-        **Night Safety South (Q-Line)**
-        * *Counter-Clockwise Loop / Every 30m*
-        * **Mon-Sun:** 7:30 PM – 3:00 AM
-        * **Sat Nights:** Extended until 4:00 AM
-        """)
-
-    st.info("🕒 **Note:** Door-to-Door service (510-642-9255) takes over from **3:00 AM – 5:30 AM**.")
-
-    # 2. The Interactive Map
-    # Coordinates pulled from transit logs for accuracy
+    # Center map on main campus
     m = folium.Map(location=[37.8715, -122.2600], zoom_start=15)
 
-    # UCPD HQ
-    folium.Marker(
-        [37.8698, -122.2592], 
-        popup="UCPD (1 Sproul Hall)", 
-        icon=folium.Icon(color='red', icon='shield', prefix='fa')
+    # 1. Recommended Well-Lit Paths (Polylines)
+    folium.PolyLine(
+        [[37.8750, -122.2590], [37.8690, -122.2590]], 
+        color="#2ecc71", weight=5, opacity=0.7, 
+        tooltip="Primary Lit Path (North-South)"
     ).add_to(m)
 
-    # Major Hubs from your PDF
-    stops = [
-        {"name": "Mining Circle (North Hub)", "loc": [37.8741, -122.2576]},
-        {"name": "Moffitt Library (South Hub)", "loc": [37.8726, -122.2606]},
-        {"name": "BART (Downtown Berkeley)", "loc": [37.8701, -122.2681]},
-        {"name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530]},
-        {"name": "Unit 2 (College & Haste)", "loc": [37.8655, -122.2548]},
-        {"name": "Unit 3 (Channing & Telegraph)", "loc": [37.8678, -122.2592]},
-        {"name": "Clark Kerr (The Horseshoe)", "loc": [37.8672, -122.2460]}
+    # 2. Add Blue Light Phone Markers
+    blue_lights = [
+        {"loc": [37.8698, -122.2590], "name": "Sproul Plaza Phone"},
+        {"loc": [37.8726, -122.2605], "name": "Moffitt Library Phone"},
+        {"loc": [37.8745, -122.2575], "name": "Mining Circle Phone"},
+        {"loc": [37.8675, -122.2530], "name": "Unit 1 Phone"},
+        {"loc": [37.8655, -122.2548], "name": "Unit 2 Phone"},
+        {"loc": [37.8678, -122.2592], "name": "Unit 3 Phone"},
+        {"loc": [37.8742, -122.2547], "name": "Greek Theatre Phone"},
+        {"loc": [37.8701, -122.2681], "name": "BART Station Phone"}
     ]
 
-    for stop in stops:
+    for bl in blue_lights:
         folium.Marker(
-            stop["loc"], 
-            popup=stop["name"], 
-            icon=folium.Icon(color='purple', icon='bus', prefix='fa')
+            bl["loc"], 
+            popup=bl["name"], 
+            icon=folium.Icon(color="blue", icon="phone", prefix="fa")
         ).add_to(m)
 
-    # Blue Light Cluster Samples (Main Campus)
-    blue_lights = [[37.8732, -122.2610], [37.8710, -122.2570], [37.8745, -122.2540]]
-    for bl in blue_lights:
-        folium.CircleMarker(bl, radius=6, color='blue', fill=True).add_to(m)
-
     folium_static(m)
-
-    # 3. Construction Alerts (Real-time Context)
-    st.warning("🚧 **Active Alert:** Southbound lane on Gayley Rd closed once a week through April 2026. Expect minor shuttle delays on the North/South loops near the Greek Theatre.")
+    
+    st.markdown("### Safety Guidelines")
+    st.write("• **Well-lit paths:** Stick to primary routes highlighted in green.")
+    st.write("• **Blue Lights:** Push the button or dial 911 for immediate dispatch.")
 # --- PAGE 4: PHRASE GENERATOR ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
