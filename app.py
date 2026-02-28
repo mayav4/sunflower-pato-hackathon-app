@@ -149,14 +149,6 @@ elif page == "Check-in Timer":
                 st.session_state.emergency_triggered = True
                 st.rerun()
 
-# --- PAGE 3: BLUE LIGHT MAP ---
-Based on the PDF you uploaded, I have updated the code to place the stops accurately and draw the pathways for the North and South loops following the streets you described.
-
-Updated Code for app.py
-Replace the entire elif page == "Berkeley Blue Lights": section with this updated version.
-
-Python
-
 # --- PAGE 3: BLUE LIGHT MAP (PDF ACCURACY & PATHWAYS) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
