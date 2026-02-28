@@ -399,7 +399,7 @@ elif page == "Safety Chatbot":
     st.title("🤖 AI Safety Assistant")
     st.write("Describe your situation or select a quick option below.")
     
-    # State to hold the selected scenario
+    # State to hold the selected scenario for immediate triggering
     if 'quick_scenario' not in st.session_state:
         st.session_state.quick_scenario = ""
 
@@ -419,10 +419,6 @@ elif page == "Safety Chatbot":
     # 2. Text Input for custom situations (updates based on scenario selection)
     user_input = st.text_input("Or describe your situation:", value=st.session_state.quick_scenario)
 
-    # Clear scenario if they start typing something else
-    if user_input != st.session_state.quick_scenario and user_input != "":
-        st.session_state.quick_scenario = ""
-
     # 3. Action Button & Advice Logic
     # Trigger if "Get Safety Plan" is clicked OR if a quick button was clicked
     if st.button("Get Safety Plan") or st.session_state.quick_scenario:
@@ -437,8 +433,7 @@ elif page == "Safety Chatbot":
                 st.warning("⚠️ **Immediate Action:** Go to a populated area (a store, restaurant) or a Blue Light phone. Do not go home. Call UCPD.")
                 st.link_button("👮 Call UCPD Now", "tel:5106423333")
             elif "lost" in final_query.lower() or "dark" in final_query.lower():
-                st.info("🗺️ **Action Plan:** Open the 'Berkeley Blue Lights' page to find the nearest stop for the Night Safety Shuttle.")
-                st.markdown("⬆️ *Use the side menu to go to **Berkeley Blue Lights***")
+                st.info("🗺️ **Action Plan:** Open the 'Berkeley Blue Lights' page to find the nearest stop for the Night Safety Shuttle[cite: 184].")
             elif "unsafe" in final_query.lower():
                 st.warning("⚠️ **Action Plan:** Trust your gut. Move to a bright, crowded area. Request a Bearwalk companion.")
                 st.link_button("🚶 Request Bearwalk", "tel:5106429255")
@@ -451,9 +446,5 @@ elif page == "Safety Chatbot":
         else:
             st.error("Please describe your situation or select a quick option.")
         
-        # Reset scenario after running logic
+        # Reset scenario after running logic to allow new inputs
         st.session_state.quick_scenario = ""
-            
-    # Reset query state after use
-    if 'chat_query' in st.session_state:
-        del st.session_state.chat_query
