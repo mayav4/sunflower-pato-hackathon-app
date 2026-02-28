@@ -19,19 +19,17 @@ st.markdown("""
 
 # 2. Sidebar Navigation
 st.sidebar.title("🛡️ Luma Menu")
+# Match these names EXACTLY in the 'if/elif' blocks below
 page = st.sidebar.radio("Navigation", ["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"])
 
 # --- PAGE 1: HOME ---
-if page == "Home & Info":
-    # 1. Centered Logo Logic
+if page == "Homepage":
+    # 1. Centered and Smaller Logo
     logo_path = "luma_logo.jpeg"
-    
-    # Using columns to center the image
     col_left, col_logo, col_right = st.columns([1, 1, 1])
     
     with col_logo:
         if os.path.exists(logo_path):
-            # Reduced width to keep it crisp and centered
             st.image(logo_path, width=160, use_container_width=False)
         else:
             st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
@@ -41,7 +39,6 @@ if page == "Home & Info":
     # 2. Emergency Buttons (Updated with SOS emoji)
     st.error("🆘 **Quick Help Section**")
     col1, col2 = st.columns(2)
-    
     with col1:
         st.link_button("🆘 CALL UCPD", "tel:5106423333")
     with col2:
@@ -49,7 +46,7 @@ if page == "Home & Info":
 
     st.divider()
 
-    # 3. Brand Story (No longer an expander!)
+    # 3. Brand Story (Direct text, no expander)
     st.markdown("### ✨ What is Luma?")
     st.markdown("""
     **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
@@ -61,17 +58,15 @@ if page == "Home & Info":
     st.markdown("---")
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
-# --- PAGE 2: SAFETY TIMER (Comforting Check-In) ---
-elif page == "Safety Timer":
+# --- PAGE 2: SAFETY TIMER (Check-in Timer) ---
+elif page == "Check-in Timer":
     col_title, col_toggle = st.columns([3, 1])
     with col_title:
         st.title("⏱️ Safety Check-In")
     with col_toggle:
         st.write("") 
-        # Added back the 'help' parameter for the info button
-        demo_mode = st.toggle("Demo Mode", value=False, help="Sets the check-in interval to 5 seconds for testing and presentation.")
+        demo_mode = st.toggle("Demo Mode", value=False, help="Sets the check-in interval to 5 seconds for testing.")
 
-    # State Management
     if 'timer_active' not in st.session_state:
         st.session_state.timer_active = False
     if 'emergency_triggered' not in st.session_state:
@@ -79,12 +74,9 @@ elif page == "Safety Timer":
 
     # --- THE COMFORTING LIGHT PURPLE ALERT SCREEN ---
     if st.session_state.emergency_triggered:
-        # Changed background-color to a soft Light Purple (#E1D5E7)
         st.markdown("""
             <style>
-            .stApp {
-                background-color: #E1D5E7 !important;
-            }
+            .stApp { background-color: #E1D5E7 !important; }
             h1, h3, p { color: #4A2C5D !important; }
             </style>
             <div style="text-align: center; padding: 40px; border: 4px solid #9b59b6; border-radius: 20px;">
@@ -94,13 +86,12 @@ elif page == "Safety Timer":
             </div>
         """, unsafe_allow_html=True)
         
-        if st.button("💛 I'm Okay Now (Reset)"):
+        if st.button("💜 I'm Okay Now (Reset)"):
             st.session_state.emergency_triggered = False
             st.session_state.timer_active = False
             st.rerun()
         st.stop() 
 
-    # --- NORMAL TIMER UI ---
     st.write("Luma is here to walk with you. Set your check-in window below.")
     
     col_a, col_b = st.columns(2)
@@ -118,7 +109,6 @@ elif page == "Safety Timer":
             st.session_state.timer_active = False
             st.rerun()
 
-        # Phase 1: The Walking Wait
         wait_time = 5 if demo_mode else (check_interval * 60)
         st.info("✨ **Luma is here with you!**")
         progress_bar = st.progress(0)
@@ -127,7 +117,6 @@ elif page == "Safety Timer":
             time.sleep(1)
             progress_bar.progress((i + 1) / wait_time)
         
-        # Phase 2: The Soft Check-In
         st.markdown("<h3 style='text-align: center;'>Are you doing okay?</h3>", unsafe_allow_html=True)
         btn_placeholder = st.empty()
         safe_confirm = btn_placeholder.button("✅ I AM SAFE", key="checkin_btn")
@@ -139,7 +128,6 @@ elif page == "Safety Timer":
                 time.sleep(1)
                 st.rerun()
             
-            # Countdown uses brand purple
             countdown_placeholder.markdown(f"<h1 style='text-align: center; color: #9b59b6; font-size: 60px;'>{s}</h1>", unsafe_allow_html=True)
             time.sleep(1)
             
@@ -147,14 +135,9 @@ elif page == "Safety Timer":
                 st.session_state.emergency_triggered = True
                 st.rerun()
 
-
-# --- PAGE 3: BLUE LIGHT MAP (PDF ACCURACY) ---
-# --- PAGE 3: BLUE LIGHT MAP (TIMES & NO PATHS) ---
+# --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
-    st.write("Click on a stop to see schedule information.")
-    
-    # 1. Schedule Information Section
     st.subheader("🚌 Night Shuttle Schedule")
     col1, col2 = st.columns(2)
     with col1:
@@ -165,97 +148,16 @@ elif page == "Berkeley Blue Lights":
         st.caption("7:30 PM - 3:00 AM | Every 30 mins")
     st.divider()
 
-    # 2. Initialize Map (Sproul Plaza Center)
-    m = folium.Map(
-        location=[37.8715, -122.2590], 
-        zoom_start=15,
-        tiles="CartoDB dark_matter"
-    )
+    m = folium.Map(location=[37.8715, -122.2590], zoom_start=15, tiles="CartoDB dark_matter")
+    folium.Marker([37.8698, -122.2595], popup="UCPD", icon=folium.Icon(color="red", icon="shield", prefix="fa")).add_to(m)
 
-    # 3. Pin: UCPD Police Station
-    folium.Marker(
-        [37.8698, -122.2595],
-        popup="<b>UCPD Headquarters</b><br>1 Sproul Hall (Basement)",
-        tooltip="Police Station",
-        icon=folium.Icon(color="red", icon="shield", prefix="fa")
-    ).add_to(m)
+    # Blue light locations
+    blue_lights = [[37.8715, -122.2605], [37.8695, -122.2595], [37.8752, -122.2592]]
+    for loc in blue_lights:
+        folium.CircleMarker(location=loc, radius=8, color="blue", fill=True).add_to(m)
 
-    # 4. Define and Pin Shuttle Stops
-    stops = [
-        {"num": "N01", "name": "Moffitt Library", "loc": [37.8727, -122.2606]},
-        {"num": "N02", "name": "West Circle", "loc": [37.8719, -122.2587]},
-        {"num": "N03", "name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
-        {"num": "N04", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
-        {"num": "N05", "name": "North Gate", "loc": [37.8753, -122.2600]},
-        {"num": "N06", "name": "Cory Hall", "loc": [37.8752, -122.2573]},
-        {"num": "N07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547]},
-        {"num": "N08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546]},
-        {"num": "S09", "name": "Unit 3", "loc": [37.8678, -122.2592]},
-        {"num": "S10", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
-        {"num": "S11", "name": "Unit 1", "loc": [37.8675, -122.2530]},
-        {"num": "S12", "name": "Unit 2", "loc": [37.8655, -122.2548]},
-        {"num": "S13", "name": "International House", "loc": [37.8708, -122.2527]},
-        {"num": "S14", "name": "Channing Circle", "loc": [37.8673, -122.2519]},
-        {"num": "S15", "name": "Warring & Channing", "loc": [37.8672, -122.2505]},
-        {"num": "S16", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505]},
-        {"num": "S17", "name": "Piedmont & Bancroft", "loc": [37.8708, -122.2527]},
-        {"num": "S18", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
-        {"num": "S19", "name": "Unit 1", "loc": [37.8675, -122.2530]},
-        {"num": "S20", "name": "RSF/Tang Center", "loc": [37.8693, -122.2625]},
-        {"num": "S21", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680]},
-        {"num": "N22", "name": "Shattuck & University", "loc": [37.8715, -122.2682]},
-        {"num": "S23", "name": "Mining Circle", "loc": [37.8741, -122.2576]},
-        {"num": "N24", "name": "Moffitt Library", "loc": [37.8727, -122.2606]}
-    ]
-    for stop in stops:
-        # Color code based on Route Prefix
-        icon_color = "purple" if stop["num"].startswith("N") else "darkpurple"
-        
-        # Update popup to show frequency
-        popup_text = f"<b>Stop {stop['num']}:</b> {stop['name']}<br><i>Frequency: Every 30 mins</i>"
-        
-        folium.Marker(
-            stop["loc"],
-            popup=popup_text,
-            tooltip=stop["name"],
-            icon=folium.Icon(color=icon_color, icon="bus", prefix="fa")
-        ).add_to(m)
-        
-    # 5. REMOVED PATHWAYS (Polylines)
-    
-    # 6. Temporary Closure Note
-    st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
-
-    # 7. Pin: Blue Light Phone Locations
-    blue_lights = [
-        {"loc": [37.8715, -122.2605], "name": "Doe Library"},
-        {"loc": [37.8695, -122.2595], "name": "Sproul Plaza"},
-        {"loc": [37.8752, -122.2592], "name": "North Gate"},
-        {"loc": [37.8655, -122.2538], "name": "Unit 2"},
-        {"loc": [37.8735, -122.2580], "name": "Mining Circle"},
-        {"loc": [37.8680, -122.2685], "name": "BART Station"},
-        {"loc": [37.8745, -122.2540], "name": "Greek Theatre"}
-    ]
-    for bl in blue_lights:
-        folium.CircleMarker(
-            location=bl["loc"],
-            radius=8,
-            popup=f"<b>Blue Light Phone</b><br>{bl['name']}",
-            color="blue",
-            fill=True,
-            fill_color="blue"
-        ).add_to(m)
-
-    # 8. Render Map
     st_folium(m, width=700, height=500)
-    
-    st.markdown("""
-    ### Legend
-    * 🔴 **Red Shield:** UCPD Police Station
-    * 🟣 **Purple Bus:** North Loop Stop (N)
-    * 🟣 **Dark Purple Bus:** South Loop Stop (S)
-    * 🔵 **Blue Circle:** Blue Light Phone
-    """)
+    st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed.")
 
 # --- PAGES 4, 5, 6 ---
 elif page == "Exit Phrase Generator":
