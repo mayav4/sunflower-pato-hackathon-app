@@ -25,18 +25,25 @@ page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley 
 if page == "Home & Info":
     import os
     
-    # 1. Logo Logic
-    logo_path = "luma_logo.jpeg"
+    # 1. High-Resolution Logo Logic
+    logo_path = "luma_logo.png"
     
     if os.path.exists(logo_path):
-        # Centers the logo and makes it look sharp
-        st.image(logo_path, width=200)
+        import base64
+        # This "Enshrinement" trick forces the browser to show the raw, high-res pixels
+        with open(logo_path, "rb") as f:
+            data = base64.b64encode(f.read()).decode("utf-8")
+        
+        st.markdown(
+            f"""
+            <div style="text-align: center;">
+                <img src="data:image/png;base64,{data}" width="250" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;">
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
     else:
-        # Fallback if the file isn't found
-        st.markdown("<h1 style='color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
-        st.caption(f"Note: {logo_path} not found in GitHub.")
-
-    st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark.</h3>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
 
     # 2. Emergency Buttons
     st.error("🆘 **Quick Help Section**")
