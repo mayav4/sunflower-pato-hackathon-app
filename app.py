@@ -97,15 +97,88 @@ elif page == "Safety Timer":
                 st.error("🚨 ALERT: Timer expired! Emergency contacts have been pinged.")
 
 # --- PAGE 3: BLUE LIGHT MAP ---
-elif page == "Berkeley Blue Lights":
+elif page == "Safety Map":
     st.header("📍 Interactive Night Safety Map")
-    m = folium.Map(location=[37.8715, -122.2590], zoom_start=15)
+    st.write("Zoom in to see exact stop locations.")
+    
+    # 3. Create the Map Center (Sproul Plaza) using Content-Rich Dark Tiles
+    m = folium.Map(
+        location=[37.8715, -122.2590], 
+        zoom_start=15, 
+        tiles="CartoDB dark_matter"  # Fixes the black page issue
+    )
 
-    # UCPD
-    folium.Marker([37.8698, -122.2595], popup="UCPD", icon=folium.Icon(color="red", icon="shield", prefix="fa")).add_to(m)
+    # 4. Marker: UCPD Police Station
+    folium.Marker(
+        [37.8698, -122.2595],
+        popup="<b>UCPD Headquarters</b><br>1 Sproul Hall (Basement)",
+        tooltip="Police Station",
+        icon=folium.Icon(color="red", icon="shield", prefix="fa")
+    ).add_to(m)
 
-    # Render Map
-    st_folium(m, width=700, height=500)
+    # 5. Markers: All Accurate Bear Transit Night Shuttle Stops
+    stops = [
+        {"num": "N01", "name": "Moffitt Library", "loc": [37.8727, -122.2606], "route": "N"},
+        {"num": "N02", "name": "West Circle", "loc": [37.8719, -122.2587], "route": "N"},
+        {"num": "N03", "name": "West Crescent", "loc": [37.8732, -122.2601], "route": "N"},
+        {"num": "N04", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681], "route": "N/S"},
+        {"num": "N05", "name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600], "route": "N"},
+        {"num": "N06", "name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573], "route": "N"},
+        {"num": "N07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547], "route": "N"},
+        {"num": "N08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546], "route": "N"},
+        {"num": "N09", "name": "Greek Theatre (Gayley)", "loc": [37.8742, -122.2547], "route": "N"},
+        {"num": "N10", "name": "Piedmont & Optometry Lane", "loc": [37.8718, -122.2526], "route": "N"},
+        {"num": "N11", "name": "International House", "loc": [37.8708, -122.2527], "route": "N/S"},
+        {"num": "N12", "name": "Clark Kerr (Piedmont Circle)", "loc": [37.8672, -122.2460], "route": "N/S"},
+        {"num": "S13", "name": "Warring & Channing", "loc": [37.8672, -122.2505], "route": "S"},
+        {"num": "S14", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505], "route": "S"},
+        {"num": "S15", "name": "Piedmont & Channing", "loc": [37.8673, -122.2519], "route": "S"},
+        {"num": "S16", "name": "Unit 2 (College & Haste)", "loc": [37.8655, -122.2548], "route": "S"},
+        {"num": "S17", "name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530], "route": "S"},
+        {"num": "S18", "name": "Martinez Commons", "loc": [37.8675, -122.2562], "route": "S"},
+        {"num": "S19", "name": "Unit 3 (Channing & Telegraph)", "loc": [37.8678, -122.2592], "route": "S"},
+        {"num": "S20", "name": "RSF / Tang Center", "loc": [37.8688, -122.2651], "route": "S"},
+        {"num": "S21", "name": "Durant & Shattuck", "loc": [37.8690, -122.2680], "route": "S"},
+        {"num": "S22", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680], "route": "S"},
+        {"num": "S23", "name": "Mining Circle", "loc": [37.8741, -122.2576], "route": "S"},
+        {"num": "S24", "name": "Moffitt Library", "loc": [37.8727, -122.2606], "route": "S"}
+    ]
+
+    for stop in stops:
+        icon_color = "purple" if "N/S" in stop["route"] else "darkpurple"
+        folium.Marker(
+            stop["loc"],
+            popup=f"<b>Stop {stop['num']}: {stop['name']}</b><br>Route: {stop['route']}",
+            tooltip=stop["name"],
+            icon=folium.Icon(color=icon_color, icon="bus", prefix="fa")
+        ).add_to(m)
+
+    # 6. Markers: Accurate Blue Light Phone Locations
+    blue_lights = [
+        {"loc": [37.8715, -122.2605], "name": "Doe Library"},
+        {"loc": [37.8695, -122.2595], "name": "Sproul Plaza"},
+        {"loc": [37.8752, -122.2592], "name": "North Gate"},
+        {"loc": [37.8655, -122.2538], "name": "Unit 2"}
+    ]
+    for bl in blue_lights:
+        folium.CircleMarker(
+            location=bl["loc"],
+            radius=8,
+            popup=f"<b>Blue Light Phone</b><br>{bl['name']}",
+            color="blue",
+            fill=True,
+            fill_color="blue"
+        ).add_to(m)
+
+    # 7. Render Map
+    st_folium(m, width=1200, height=600, use_container_width=True)
+    
+    st.markdown("""
+    ### Legend
+    * 🔴 **Red Shield:** UCPD Police Station
+    * 🟣 **Purple Bus:** Night Shuttle Stop
+    * 🔵 **Blue Circle:** Blue Light Phone
+    """)
 
 # --- PAGE 4: PHRASE GENERATOR ---
 elif page == "Exit Phrase Generator":
