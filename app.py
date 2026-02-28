@@ -23,29 +23,41 @@ page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley 
 
 # --- PAGE 1: HOME ---
 if page == "Home & Info":
+    # 1. Centered and Smaller Logo Logic
     logo_path = "luma_logo.jpeg"
     
-    if os.path.exists(logo_path):
-        st.image(logo_path, width=250, use_container_width=False)
-    else:
-        st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
-        st.caption(f"Note: {logo_path} not found. Check GitHub root folder!")
+    # Create three columns to center the middle one
+    col_left, col_logo, col_right = st.columns([1, 1, 1])
+    
+    with col_logo:
+        if os.path.exists(logo_path):
+            # Reducing width to 150 makes low-res artifacts much harder to see
+            st.image(logo_path, width=150, use_container_width=False)
+        else:
+            st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
+            st.caption(f"Note: {logo_path} not found.")
 
     st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark.</h3>", unsafe_allow_html=True)
 
+    # 2. Emergency Buttons
     st.error("🆘 **Quick Help Section**")
     col1, col2 = st.columns(2)
+    
     with col1:
         st.link_button("🚨 CALL UCPD", "tel:5106423333")
     with col2:
         st.link_button("🚶 NIGHT SHUTTLE", "tel:5106439255")
 
     st.divider()
+
+    # 3. Brand Story
     with st.expander("✨ What is Luma?"):
         st.markdown("""
         **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
         We are your light source in Berkeley, ensuring no student has to walk in the dark alone.
         """)
+
+    # 4. Footer
     st.markdown("---")
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
