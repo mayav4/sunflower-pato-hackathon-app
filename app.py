@@ -24,7 +24,8 @@ if page == "Home & Info":
     st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
     
     # Luma Logo/Graphic
-    st.image("https://img.freepik.com/premium-vector/purple-moon-logo-design_677402-452.jpg", width=150)
+    # If your file is named logo.png
+    st.image("luma_logo.png", width=150)
     
     st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark.</h3>", unsafe_allow_html=True)
 
