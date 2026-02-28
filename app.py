@@ -127,8 +127,8 @@ elif page == "Berkeley Blue Lights":
     st.subheader("🚌 Night Shuttle Schedule")
     col1, col2, col3 = st.columns(3)
     col1.metric("Frequency", "Every 30 Mins")
-    col2.metric("North Loop (N)", "7:45 PM - 2:15 AM [cite: 4]")
-    col3.metric("South Loop (S)", "7:30 PM - 3:00 AM [cite: 6]")
+    col2.metric("North Loop (N)", "7:45 PM - 2:15 AM")
+    col3.metric("South Loop (S)", "7:30 PM - 3:00 AM")
     st.divider()
 
     # 2. Initialize Map (Sproul Plaza Center)
@@ -146,20 +146,20 @@ elif page == "Berkeley Blue Lights":
         icon=folium.Icon(color="red", icon="shield", prefix="fa")
     ).add_to(m)
 
-    # 4. Pin: Bear Transit Night Shuttle Stops (Verified Locations) 
+    # 4. Pin: Bear Transit Night Shuttle Stops (Verified Locations)
     stops = [
+        {"name": "Moffitt Library (University Dr)", "loc": [37.8727, -122.2606]}, # Verified
         {"name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
         {"name": "Shattuck & University", "loc": [37.8715, -122.2682]},
         {"name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
         {"name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600]},
         {"name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573]},
-        {"name": "Greek Theatre (Gayley & University Dr)", "loc": [37.8742, -122.2547]},
+        {"name": "Greek Theatre (Gayley & Univ Dr)", "loc": [37.8742, -122.2547]},
         {"name": "International House (Piedmont & Bancroft)", "loc": [37.8708, -122.2527]},
         {"name": "Clark Kerr Horseshoe", "loc": [37.8672, -122.2460]},
         {"name": "Unit 2 (Piedmont)", "loc": [37.8655, -122.2548]},
         {"name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530]},
         {"name": "Unit 3 (Durant & Telegraph)", "loc": [37.8678, -122.2592]},
-        {"name": "Moffitt Library", "loc": [37.8727, -122.2606]},
         {"name": "Mining Circle", "loc": [37.8741, -122.2576]},
         {"name": "RSF/Tang Center", "loc": [37.8693, -122.2625]}
     ]
@@ -171,7 +171,7 @@ elif page == "Berkeley Blue Lights":
             icon=folium.Icon(color="purple", icon="bus", prefix="fa")
         ).add_to(m)
         
-    # Temporary Closure Note 
+    # Temporary Closure Note
     st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
 
     # 5. Pin: Blue Light Phone Locations
