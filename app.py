@@ -34,7 +34,7 @@ if page == "Home & Info":
         st.markdown("""
         ### ✨ The Meaning Behind the Name
         **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
-        Across cultures, it represents illumination and hope—the "sunset glow" that guides 
+        Across cultures, it represents illumination and hope—the "moonlight glow" that guides 
         us through the night. 
         
         We chose this name because our mission is to be your light source in Berkeley, 
