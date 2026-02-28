@@ -25,7 +25,7 @@ if page == "Home & Info":
     import os
     
     # 1. Logo Logic
-    logo_path = "luma_logo.png"
+    logo_path = "luma_logo.jpeg"
     
     if os.path.exists(logo_path):
         # Centers the logo and makes it look sharp
