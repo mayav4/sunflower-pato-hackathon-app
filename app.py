@@ -3,7 +3,15 @@ import time
 import random
 import os
 import folium
-from streamlit_folium import folium_static, st_folium
+from streamlit_folium import st_folium
+
+# 0. INITIALIZE SESSION STATE (Must be at the very top to prevent errors)
+if 'current_page' not in st.session_state:
+    st.session_state.current_page = "Homepage"
+if 'timer_active' not in st.session_state:
+    st.session_state.timer_active = False
+if 'emergency_triggered' not in st.session_state:
+    st.session_state.emergency_triggered = False
 
 # 1. Page Configuration & Theme
 st.set_page_config(page_title="Luma Safety", page_icon="🌙", layout="centered")
@@ -14,27 +22,28 @@ st.markdown("""
     .main { background-color: #f0f2f6; }
     .stButton>button { width: 100%; border-radius: 20px; height: 3em; background-color: #9b59b6; color: white; }
     .emergency-text { color: #ff4757; font-weight: bold; font-size: 24px; text-align: center; }
+    /* Specific styling for the 911 button to make it red */
+    div[data-testid="stHorizontalBlock"] > div:nth-child(1) button {
+        border: 2px solid #ff4757 !important;
+        color: #ff4757 !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# Function to change page state
-def navigate_to(page_name):
-    st.session_state.current_page = page_name
-
-# 2. Sidebar Navigation
+# 2. Sidebar Navigation Logic
 st.sidebar.title("🛡️ Luma Menu")
+nav_options = ["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"]
 
-# We link the radio button to the session state
+# This links the sidebar selection to our session state so the "Hyperlink" buttons work
 page = st.sidebar.radio(
     "Navigation", 
-    ["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"],
-    index=["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"].index(st.session_state.current_page),
+    nav_options,
+    index=nav_options.index(st.session_state.current_page),
     key="nav_radio"
 )
-# Sync the state if the user clicks the sidebar manually
 st.session_state.current_page = page
 
-# --- PAGE 1: HOME ---
+# --- PAGE 1: HOMEPAGE ---
 if page == "Homepage":
     st.markdown("<p style='text-align: left; color: #9b59b6; font-size: 14px;'>⬅️ Click the arrow in the upper left corner to open the menu</p>", unsafe_allow_html=True)
     
@@ -49,7 +58,7 @@ if page == "Homepage":
 
     st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark ✨</h3>", unsafe_allow_html=True)
 
-    # 2. Emergency Buttons
+    # Emergency Buttons Grid
     st.error("🆘 **Quick Help Section**")
     row1_col1, row1_col2 = st.columns(2)
     row2_col1, row2_col2 = st.columns(2)
@@ -63,34 +72,33 @@ if page == "Homepage":
     with row2_col2:
         st.link_button("🚌 SHUTTLE", "tel:5106439255")
 
-    # 3. THE FIXED BUTTON
     st.markdown("---")
     st.subheader("👤 Personal Safety Setup")
     st.write("Ensure Luma knows who to reach out to if you miss a check-in.")
     
-    # We use the navigate_to function here
     if st.button("➕ Add Your Emergency Contacts"):
         st.session_state.current_page = "Emergency Contacts"
         st.rerun()
 
     st.divider()
 
-    # 4. Brand Story & Guide
     st.markdown("### ✨ What is Luma?")
-    st.markdown("We are your light source in Berkeley, ensuring no student has to walk in the dark alone.")
+    st.markdown("""
+    **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
+    We are your light source in Berkeley, ensuring no student has to walk in the dark alone. 
+    """)
 
     st.info("""
-    **Sidebar Guide:**
-    * **Check-in Timer:** Automated safety pings.
-    * **Berkeley Blue Lights:** Interactive map.
-    * **Exit Phrases:** Excuses to leave safely.
-    * **Emergency Contacts:** Full directory.
-    * **Safety Chatbot:** AI advice.
+    **🛠️ How to use Luma:**
+    * **Check-in Timer:** Set a supportive timer for your walk home.
+    * **Berkeley Blue Lights:** Map of shuttle stops and emergency phones.
+    * **Exit Phrases:** Quick excuses to leave uncomfortable situations.
+    * **Safety Chatbot:** AI-powered advice for any situation.
     """)
 
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
-# --- PAGE 2: SAFETY TIMER (Check-in Timer) ---
+# --- PAGE 2: CHECK-IN TIMER ---
 elif page == "Check-in Timer":
     col_title, col_toggle = st.columns([3, 1])
     with col_title:
@@ -99,12 +107,7 @@ elif page == "Check-in Timer":
         st.write("") 
         demo_mode = st.toggle("Demo Mode", value=False, help="Sets the check-in interval to 5 seconds for testing.")
 
-    if 'timer_active' not in st.session_state:
-        st.session_state.timer_active = False
-    if 'emergency_triggered' not in st.session_state:
-        st.session_state.emergency_triggered = False
-
-    # --- THE COMFORTING LIGHT PURPLE ALERT SCREEN ---
+    # Emergency Yellow/Purple Alert Screen
     if st.session_state.emergency_triggered:
         st.markdown("""
             <style>
@@ -118,7 +121,7 @@ elif page == "Check-in Timer":
             </div>
         """, unsafe_allow_html=True)
         
-        if st.button("💜 I'm Okay Now (Reset)"):
+        if st.button("I'm Okay Now (Reset)"):
             st.session_state.emergency_triggered = False
             st.session_state.timer_active = False
             st.rerun()
@@ -168,136 +171,64 @@ elif page == "Check-in Timer":
                 st.rerun()
 
 # --- PAGE 3: BLUE LIGHT MAP ---
-# --- PAGE 3: BLUE LIGHT MAP (PDF ACCURACY) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
-    st.write("Click on a stop to see schedule information.")
-    
-    # 1. Schedule Information Section
     st.subheader("🚌 Night Shuttle Schedule")
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown("<span style='color:orange'>●</span> **North Loop (N)**", unsafe_allow_html=True)
+        st.markdown("**North Loop (N)**")
         st.caption("7:45 PM - 2:15 AM | Every 30 mins")
     with col2:
-        st.markdown("<span style='color:purple'>●</span> **South Loop (S)**", unsafe_allow_html=True)
+        st.markdown("**South Loop (S)**")
         st.caption("7:30 PM - 3:00 AM | Every 30 mins")
     st.divider()
 
-    # 2. Initialize Map (Sproul Plaza Center)
-    m = folium.Map(
-        location=[37.8715, -122.2590], 
-        zoom_start=15,
-        tiles="CartoDB dark_matter"
-    )
-
-    # 3. Pin: UCPD Police Station
-    folium.Marker(
-        [37.8698, -122.2595],
-        popup="<b>UCPD Headquarters</b><br>1 Sproul Hall (Basement)",
-        tooltip="Police Station",
-        icon=folium.Icon(color="red", icon="shield", prefix="fa")
-    ).add_to(m)
-
-    # 4. Define and Pin Shuttle Stops based on PDF
-    # Verified locations and numbers from official PDF map
-    stops = [
-        {"num": "N01", "name": "Moffitt Library", "loc": [37.8727, -122.2606]},
-        {"num": "N02", "name": "Shattuck & University", "loc": [37.8715, -122.2682]},
-        {"num": "N03", "name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
-        {"num": "N05", "name": "North Gate", "loc": [37.8753, -122.2600]},
-        {"num": "N06", "name": "Cory Hall", "loc": [37.8752, -122.2573]},
-        {"num": "N07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547]},
-        {"num": "N08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546]},
-        {"num": "N11", "name": "Bowles Hall", "loc": [37.8698, -122.2533]},
-        {"num": "N13", "name": "International House", "loc": [37.8708, -122.2527]},
-        {"num": "N14", "name": "Channing Circle", "loc": [37.8673, -122.2519]},
-        {"num": "N15", "name": "Warring & Channing", "loc": [37.8672, -122.2505]},
-        {"num": "N19", "name": "Student Union/Sather Gate", "loc": [37.8696, -122.2595]},
-        {"num": "N20", "name": "RSF/Tang Center", "loc": [37.8693, -122.2625]},
-        {"num": "N21", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680]},
-        {"num": "N22", "name": "Berkeley Public Library", "loc": [37.8705, -122.2682]},
-        {"num": "N23", "name": "Hearst Mining Circle", "loc": [37.8741, -122.2576]},
-        
-        {"num": "S01", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
-        {"num": "S03", "name": "West Circle", "loc": [37.8719, -122.2587]},
-        {"num": "S06", "name": "Shattuck & Durant", "loc": [37.8677, -122.2681]},
-        {"num": "S07", "name": "Dwight & Fulton", "loc": [37.8660, -122.2655]},
-        {"num": "S08", "name": "Ellsworth Parking Garage", "loc": [37.8675, -122.2625]},
-        {"num": "S09", "name": "Unit 3", "loc": [37.8678, -122.2592]},
-        {"num": "S10", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
-        {"num": "S11", "name": "Unit 1", "loc": [37.8675, -122.2530]},
-        {"num": "S12", "name": "Unit 2", "loc": [37.8655, -122.2548]},
-        {"num": "S13", "name": "Dwight & Piedmont", "loc": [37.8655, -122.2520]},
-        {"num": "S14", "name": "Clark Kerr - Horseshoe", "loc": [37.8672, -122.2460]},
-        {"num": "S15", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505]},
-        {"num": "S16", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505]},
-        {"num": "S17", "name": "Wurster Hall", "loc": [37.8701, -122.2555]},
-        {"num": "S18", "name": "Hearst Gym", "loc": [37.8698, -122.2575]},
-        {"num": "S23", "name": "Hearst Mining Circle", "loc": [37.8741, -122.2576]}
-    ]
-    for stop in stops:
-        # Color code based on Route Prefix: Yellow for North, Purple for South
-        icon_color = "orange" if stop["num"].startswith("N") else "purple"
-        
-        # Update popup to show stop number and frequency
-        popup_text = f"<b>Stop {stop['num']}:</b> {stop['name']}<br><i>Frequency: Every 30 mins</i>"
-        
-        folium.Marker(
-            stop["loc"],
-            popup=popup_text,
-            tooltip=stop["name"],
-            icon=folium.Icon(color=icon_color, icon="bus", prefix="fa")
-        ).add_to(m)
-        
-    # 5. Temporary Closure Note from PDF
-    st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
-
-    # 6. Pin: Blue Light Phone Locations
-    blue_lights = [
-        {"loc": [37.8715, -122.2605], "name": "Doe Library"},
-        {"loc": [37.8695, -122.2595], "name": "Sproul Plaza"},
-        {"loc": [37.8752, -122.2592], "name": "North Gate"},
-        {"loc": [37.8655, -122.2538], "name": "Unit 2"},
-        {"loc": [37.8735, -122.2580], "name": "Mining Circle"},
-        {"loc": [37.8680, -122.2685], "name": "BART Station"},
-        {"loc": [37.8745, -122.2540], "name": "Greek Theatre"}
-    ]
-    for bl in blue_lights:
-        folium.CircleMarker(
-            location=bl["loc"],
-            radius=8,
-            popup=f"<b>Blue Light Phone</b><br>{bl['name']}",
-            color="blue",
-            fill=True,
-            fill_color="blue"
-        ).add_to(m)
-
-    # 7. Render Map
-    st_folium(m, width=700, height=500)
+    m = folium.Map(location=[37.8715, -122.2590], zoom_start=15, tiles="CartoDB dark_matter")
     
-    st.markdown("""
-    ### Legend
-    * 🔴 **Red Shield:** UCPD Police Station
-    * 🟠 **Orange Bus:** North Loop Stop (N)
-    * 🟣 **Purple Bus:** South Loop Stop (S)
-    * 🔵 **Blue Circle:** Blue Light Phone
-    """)
+    # UCPD Pin
+    folium.Marker([37.8698, -122.2595], popup="UCPD", icon=folium.Icon(color="red", icon="shield", prefix="fa")).add_to(m)
 
-# --- PAGES 4, 5, 6 ---
+    # Common shuttle stops
+    stops = [[37.8727, -122.2606], [37.8701, -122.2681], [37.8675, -122.2530], [37.8655, -122.2548]]
+    for loc in stops:
+        folium.Marker(loc, icon=folium.Icon(color="purple", icon="bus", prefix="fa")).add_to(m)
+
+    st_folium(m, width=700, height=500)
+    st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed.")
+
+# --- PAGE 4: EXIT PHRASES ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
-    phrases = ["My roommate is locked out!", "My mom is calling.", "My Uber is here!"]
-    if st.button("Generate"):
-        st.success(f"**Try:** \"{random.choice(phrases)}\"")
+    phrases = [
+        "My roommate is locked out, I have to run!", 
+        "My mom is calling me, it sounds urgent.", 
+        "My Uber is 1 minute away, gotta go!",
+        "I just realized I left my stove on!"
+    ]
+    if st.button("Generate New Excuse"):
+        st.success(f"**Try saying:** \"{random.choice(phrases)}\"")
 
+# --- PAGE 5: EMERGENCY CONTACTS ---
 elif page == "Emergency Contacts":
     st.title("🚨 Emergency Contacts")
-    st.link_button("📞 CALL UCPD", "tel:5106423333")
-    st.link_button("🚶 Night Safety Shuttle", "tel:5106439255")
+    st.write("Keep these numbers handy for immediate assistance.")
+    
+    st.link_button("🚨 CALL 911", "tel:911")
+    st.link_button("👮 UCPD (Non-Emergency)", "tel:5106423333")
+    st.link_button("🚶 BearWalk (Escort)", "tel:5106429255")
+    st.link_button("🚌 Night Shuttle", "tel:5106439255")
+    
+    st.divider()
+    st.subheader("Your Personal Contacts")
+    name = st.text_input("Contact Name")
+    phone = st.text_input("Contact Phone Number")
+    if st.button("Save Contact"):
+        st.toast(f"Saved {name} as primary contact!")
 
+# --- PAGE 6: SAFETY CHATBOT ---
 elif page == "Safety Chatbot":
     st.title("🤖 AI Safety Assistant")
-    user_msg = st.text_input("Describe your situation:")
+    st.write("How can I help you stay safe tonight?")
+    user_msg = st.text_input("Describe your situation (e.g., 'I am being followed')")
     if st.button("Get Safety Plan"):
-        st.info("Plan generated: Stay in well-lit areas and call a friend.")
+        st.info("Plan: Head toward the nearest Blue Light phone or lit building. Call UCPD.")
