@@ -82,7 +82,7 @@ elif page == "Safety Timer":
             </div>
         """, unsafe_allow_html=True)
         
-        if st.button("💜 I'm Okay Now (Reset)"):
+        if st.button("💛 I'm Okay Now (Reset)"):
             st.session_state.emergency_triggered = False
             st.session_state.timer_active = False
             st.rerun()
