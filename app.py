@@ -165,42 +165,45 @@ elif page == "Berkeley Blue Lights":
     ).add_to(m)
 
     # 4. Define and Pin Shuttle Stops based on PDF
+    # Verified names and locations from official map
     stops = [
-        {"num": "01", "name": "Moffitt Library", "loc": [37.8727, -122.2606]},
-        {"num": "02", "name": "West Circle", "loc": [37.8719, -122.2587]},
-        {"num": "03", "name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
-        {"num": "04", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
-        {"num": "05", "name": "North Gate", "loc": [37.8753, -122.2600]},
-        {"num": "06", "name": "Cory Hall", "loc": [37.8752, -122.2573]},
-        {"num": "07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547]},
-        {"num": "08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546]},
-        {"num": "09", "name": "Unit 3", "loc": [37.8678, -122.2592]},
-        {"num": "10", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
-        {"num": "11", "name": "Unit 1", "loc": [37.8675, -122.2530]},
-        {"num": "12", "name": "Unit 2", "loc": [37.8655, -122.2548]},
-        {"num": "13", "name": "International House", "loc": [37.8708, -122.2527]},
-        {"num": "14", "name": "Channing Circle", "loc": [37.8673, -122.2519]},
-        {"num": "15", "name": "Warring & Channing", "loc": [37.8672, -122.2505]},
-        {"num": "16", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505]},
-        {"num": "17", "name": "Piedmont & Bancroft", "loc": [37.8708, -122.2527]},
-        {"num": "18", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
-        {"num": "19", "name": "Unit 1", "loc": [37.8675, -122.2530]},
-        {"num": "20", "name": "RSF/Tang Center", "loc": [37.8693, -122.2625]},
-        {"num": "21", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680]},
-        {"num": "22", "name": "Shattuck & University", "loc": [37.8715, -122.2682]},
-        {"num": "23", "name": "Mining Circle", "loc": [37.8741, -122.2576]},
-        {"num": "24", "name": "Moffitt Library", "loc": [37.8727, -122.2606]}
+        {"num": "N01", "name": "Moffitt Library (University Dr)", "loc": [37.8727, -122.2606]},
+        {"num": "N02", "name": "West Circle", "loc": [37.8719, -122.2587]},
+        {"num": "N03", "name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
+        {"num": "N04", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
+        {"num": "N05", "name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600]},
+        {"num": "N06", "name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573]},
+        {"num": "N07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547]},
+        {"num": "N08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546]},
+        {"num": "S09", "name": "Unit 3 (Channing & Telegraph)", "loc": [37.8678, -122.2592]},
+        {"num": "S10", "name": "Martinez Commons (Bancroft)", "loc": [37.8675, -122.2562]},
+        {"num": "S11", "name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530]},
+        {"num": "S12", "name": "Unit 2 (College & Haste)", "loc": [37.8655, -122.2548]},
+        {"num": "S13", "name": "International House (Piedmont)", "loc": [37.8708, -122.2527]},
+        {"num": "S14", "name": "Channing Circle", "loc": [37.8673, -122.2519]},
+        {"num": "S15", "name": "Warring & Channing", "loc": [37.8672, -122.2505]},
+        {"num": "S16", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505]},
+        {"num": "S17", "name": "Piedmont & Bancroft", "loc": [37.8708, -122.2527]},
+        {"num": "S18", "name": "Martinez Commons (Channing)", "loc": [37.8675, -122.2562]},
+        {"num": "S19", "name": "Unit 1 (Channing)", "loc": [37.8675, -122.2530]},
+        {"num": "S20", "name": "RSF/Tang Center", "loc": [37.8693, -122.2625]},
+        {"num": "S21", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680]},
+        {"num": "N22", "name": "Shattuck & University", "loc": [37.8715, -122.2682]},
+        {"num": "S23", "name": "Mining Circle", "loc": [37.8741, -122.2576]},
+        {"num": "N24", "name": "Moffitt Library", "loc": [37.8727, -122.2606]}
     ]
     for stop in stops:
+        # Color code based on Route Prefix (N for North, S for South)
+        icon_color = "purple" if stop["num"].startswith("N") else "darkpurple"
         folium.Marker(
             stop["loc"],
             popup=f"<b>Stop {stop['num']}:</b> {stop['name']}",
-            tooltip=stop['name'],
-            icon=folium.Icon(color="purple", icon="bus", prefix="fa")
+            tooltip=stop["name"],
+            icon=folium.Icon(color=icon_color, icon="bus", prefix="fa")
         ).add_to(m)
         
     # 5. Add Pathways (Polylines based on map routes)
-    # North Loop Path (Purple)
+    # North Loop Path (Clockwise - Purple)
     north_path = [
         [37.8727, -122.2606], [37.8719, -122.2587], [37.8735, -122.2670],
         [37.8701, -122.2681], [37.8753, -122.2600], [37.8752, -122.2573],
@@ -208,7 +211,7 @@ elif page == "Berkeley Blue Lights":
     ]
     folium.PolyLine(north_path, color="purple", weight=4, opacity=0.8, tooltip="North Loop (N)").add_to(m)
 
-    # South Loop Path (Dark Purple)
+    # South Loop Path (Counter-Clockwise - Dark Purple)
     south_path = [
         [37.8678, -122.2592], [37.8675, -122.2562], [37.8675, -122.2530],
         [37.8655, -122.2548], [37.8708, -122.2527], [37.8673, -122.2519],
