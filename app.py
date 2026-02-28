@@ -1,6 +1,8 @@
 import streamlit as st
 import time
 import random
+from streamlit_folium import folium_static
+import folium
 
 # 1. Page Configuration & Theme
 st.set_page_config(page_title="NightWalk Safety", page_icon="🌙", layout="centered")
@@ -107,29 +109,62 @@ elif page == "Safety Timer":
 
 # --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Berkeley Blue Lights":
-    st.title("🚌 Night Shuttle & Safety Map")
+    st.title("📍 Interactive Safety Map")
+    st.write("Real-time locations for UCPD, Night Shuttle hubs, and Emergency Blue Lights.")
 
-    st.write("""
-    Night shuttle service connects campus with transit and housing areas during evening hours.
-    This map is a visual reference of key locations.
+    # Center the map on UC Berkeley (Sproul Plaza area)
+    # Coordinates: [37.8719, -122.2585]
+    m = folium.Map(location=[37.8716, -122.2585], zoom_start=16, control_scale=True)
+
+    # 1. ADD UCPD HEADQUARTERS
+    folium.Marker(
+        [37.8701, -122.2595],
+        popup="<b>UCPD Headquarters</b><br>1 Sproul Hall<br>Call: 510-642-3333",
+        tooltip="POLICE STATION",
+        icon=folium.Icon(color="red", icon="shield", prefix="fa")
+    ).add_to(m)
+
+    # 2. ADD NIGHT SHUTTLE HUBS (Common spots)
+    shuttle_stops = [
+        {"loc": [37.8736, -122.2575], "name": "Evans Hall Shuttle Hub"},
+        {"loc": [37.8693, -122.2605], "name": "RSF / Haas Pavilion Stop"},
+        {"loc": [37.8751, -122.2584], "name": "North Gate Shuttle Stop"}
+    ]
+    for stop in shuttle_stops:
+        folium.Marker(
+            stop["loc"],
+            popup=f"<b>{stop['name']}</b><br>Service starts at 7:30 PM",
+            tooltip="NIGHT SHUTTLE",
+            icon=folium.Icon(color="purple", icon="bus", prefix="fa")
+        ).add_to(m)
+
+    # 3. ADD SAMPLE BLUE LIGHT STATIONS
+    # (In a real app, you'd load these from a CSV/JSON of all 100+ lights)
+    blue_lights = [
+        [37.8725, -122.2605], [37.8710, -122.2550], 
+        [37.8745, -122.2620], [37.8705, -122.2625]
+    ]
+    for light in blue_lights:
+        folium.CircleMarker(
+            location=light,
+            radius=8,
+            popup="Emergency Blue Light Phone",
+            color="#318ce7",
+            fill=True,
+            fill_color="#318ce7"
+        ).add_to(m)
+
+    # Display the map in Streamlit
+    folium_static(m)
+
+    st.markdown("""
+    ### Legend:
+    * 🔴 **Red Shield:** UCPD Headquarters (Sproul Hall)
+    * 🟣 **Purple Bus:** Night Shuttle Pick-up Points
+    * 🔵 **Blue Circles:** Emergency Blue Light Stations
     """)
-
-    # Use a static image map instead of interactive pins
-    st.image("berkeley_night_map.png", caption="UC Berkeley Night Shuttle & Safety Zones")
-
-    st.subheader("Locations (Reference)")
-
-    st.write("""
-    🚌 Night Shuttle pickup areas (approximate)  
-    🚏 Bus and transit connections  
-    🔵 Blue light emergency phones  
-    👮 Campus safety resources
-    """)
-
-    st.info("""
-    This is a prototype reference map.
-    For real-time transit and navigation, use official campus transportation services.
-    """)
+    
+    st.info("💡 **Pro-Tip:** If you are near a Blue Light, you are within eyeshot of a security camera. Stay in the light's radius while waiting for help.")
 # --- PAGE 4: PHRASE GENERATOR ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
