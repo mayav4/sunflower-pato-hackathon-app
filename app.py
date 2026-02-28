@@ -3,6 +3,7 @@ import time
 import random
 from streamlit_folium import folium_static
 import folium
+from streamlit_folium import st_folium
 
 # 1. Page Configuration & Theme
 st.set_page_config(page_title="NightWalk Safety", page_icon="🌙", layout="centered")
@@ -109,43 +110,84 @@ elif page == "Safety Timer":
                 st.balloons() # Visual 'alert' for the demo
 
 # --- PAGE 3: BLUE LIGHT MAP ---
-elif page == "Berkeley Blue Lights":
-    st.title("🛡️ UCPD Recommended Night Safety Map")
+elif page == "Safety Map":
+    st.header("📍 Interactive Night Safety Map")
+    
+    # 3. Create the Map Center (Sproul Plaza)
+    m = folium.Map(location=[37.8715, -122.2590], zoom_start=15)
 
-    # Center map on main campus
-    m = folium.Map(location=[37.8715, -122.2600], zoom_start=15)
-
-    # 1. Recommended Well-Lit Paths (Polylines)
-    folium.PolyLine(
-        [[37.8750, -122.2590], [37.8690, -122.2590]], 
-        color="#2ecc71", weight=5, opacity=0.7, 
-        tooltip="Primary Lit Path (North-South)"
+    # 4. Markers: UCPD Police Station
+    folium.Marker(
+        [37.8698, -122.2595],
+        popup="<b>UCPD Headquarters</b><br>1 Sproul Hall (Basement)",
+        tooltip="Police Station",
+        icon=folium.Icon(color="red", icon="shield", prefix="fa")
     ).add_to(m)
 
-    # 2. Add Blue Light Phone Markers
-    blue_lights = [
-        {"loc": [37.8698, -122.2590], "name": "Sproul Plaza Phone"},
-        {"loc": [37.8726, -122.2605], "name": "Moffitt Library Phone"},
-        {"loc": [37.8745, -122.2575], "name": "Mining Circle Phone"},
-        {"loc": [37.8675, -122.2530], "name": "Unit 1 Phone"},
-        {"loc": [37.8655, -122.2548], "name": "Unit 2 Phone"},
-        {"loc": [37.8678, -122.2592], "name": "Unit 3 Phone"},
-        {"loc": [37.8742, -122.2547], "name": "Greek Theatre Phone"},
-        {"loc": [37.8701, -122.2681], "name": "BART Station Phone"}
+    # 5. Markers: All Bear Transit Night Shuttle Stops
+    # NOTE: Coordinates are approximations based on map location descriptions.
+    stops = [
+        {"num": "N01", "name": "Moffitt Library", "loc": [37.8727, -122.2606], "route": "N"},
+        {"num": "N02", "name": "West Circle", "loc": [37.8719, -122.2587], "route": "N"},
+        {"num": "N03", "name": "West Crescent", "loc": [37.8732, -122.2601], "route": "N"},
+        {"num": "N04", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681], "route": "N/S"},
+        {"num": "N05", "name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600], "route": "N"},
+        {"num": "N06", "name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573], "route": "N"},
+        {"num": "N07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547], "route": "N"},
+        {"num": "N08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546], "route": "N"},
+        {"num": "N09", "name": "Greek Theatre (Gayley)", "loc": [37.8742, -122.2547], "route": "N"},
+        {"num": "N10", "name": "Piedmont & Optometry Lane", "loc": [37.8718, -122.2526], "route": "N"},
+        {"num": "N11", "name": "International House", "loc": [37.8708, -122.2527], "route": "N/S"},
+        {"num": "N12", "name": "Clark Kerr (Piedmont Circle)", "loc": [37.8672, -122.2460], "route": "N/S"},
+        {"num": "S13", "name": "Warring & Channing", "loc": [37.8672, -122.2505], "route": "S"},
+        {"num": "S14", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505], "route": "S"},
+        {"num": "S15", "name": "Piedmont & Channing", "loc": [37.8673, -122.2519], "route": "S"},
+        {"num": "S16", "name": "Unit 2 (College & Haste)", "loc": [37.8655, -122.2548], "route": "S"},
+        {"num": "S17", "name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530], "route": "S"},
+        {"num": "S18", "name": "Martinez Commons", "loc": [37.8675, -122.2562], "route": "S"},
+        {"num": "S19", "name": "Unit 3 (Channing & Telegraph)", "loc": [37.8678, -122.2592], "route": "S"},
+        {"num": "S20", "name": "RSF / Tang Center", "loc": [37.8688, -122.2651], "route": "S"},
+        {"num": "S21", "name": "Durant & Shattuck", "loc": [37.8690, -122.2680], "route": "S"},
+        {"num": "S22", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680], "route": "S"},
+        {"num": "S23", "name": "Mining Circle", "loc": [37.8741, -122.2576], "route": "S"},
+        {"num": "S24", "name": "Moffitt Library", "loc": [37.8727, -122.2606], "route": "S"}
     ]
 
-    for bl in blue_lights:
+    for stop in stops:
+        icon_color = "purple" if stop["route"] == "N/S" else "darkpurple"
         folium.Marker(
-            bl["loc"], 
-            popup=bl["name"], 
-            icon=folium.Icon(color="blue", icon="phone", prefix="fa")
+            stop["loc"],
+            popup=f"<b>{stop['num']}: {stop['name']}</b><br>Route: {stop['route']}",
+            tooltip=stop["name"],
+            icon=folium.Icon(color=icon_color, icon="bus", prefix="fa")
         ).add_to(m)
 
-    folium_static(m)
+    # 6. Markers: Sample Blue Light Phones
+    blue_lights = [
+        {"loc": [37.8715, -122.2605], "name": "Doe Library"},
+        {"loc": [37.8695, -122.2595], "name": "Sproul Plaza"},
+        {"loc": [37.8752, -122.2592], "name": "North Gate"},
+        {"loc": [37.8655, -122.2538], "name": "Unit 2"}
+    ]
+    for bl in blue_lights:
+        folium.CircleMarker(
+            location=bl["loc"],
+            radius=8,
+            popup=f"<b>Blue Light Phone</b><br>{bl['name']}",
+            color="blue",
+            fill=True,
+            fill_color="blue"
+        ).add_to(m)
+
+    # 7. Render Map
+    st_folium(m, width=1200, height=600)
     
-    st.markdown("### Safety Guidelines")
-    st.write("• **Well-lit paths:** Stick to primary routes highlighted in green.")
-    st.write("• **Blue Lights:** Push the button or dial 911 for immediate dispatch.")
+    st.markdown("""
+    ### Legend
+    * 🔴 **Red Shield:** UCPD Police Station
+    * 🟣 **Purple Bus:** Night Shuttle Stop
+    * 🔵 **Blue Circle:** Blue Light Phone
+    """)
 # --- PAGE 4: PHRASE GENERATOR ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
