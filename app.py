@@ -22,39 +22,40 @@ page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley 
 
 # --- PAGE 1: HOME ---
 if page == "Home & Info":
-    # Centered Header
-    st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
+    import os
     
-    # Luma Logo/Graphic
-    # If your file is named logo.png
-    st.image("luma_logo.jpeg", width=150)
+    # 1. Logo Logic
+    logo_path = "luma_logo.png"
     
+    if os.path.exists(logo_path):
+        # Centers the logo and makes it look sharp
+        st.image(logo_path, width=200)
+    else:
+        # Fallback if the file isn't found
+        st.markdown("<h1 style='color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
+        st.caption(f"Note: {logo_path} not found in GitHub.")
+
     st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark.</h3>", unsafe_allow_html=True)
 
-    # --- THE "RIGHT NOW" SECTION ---
+    # 2. Emergency Buttons
     st.error("🆘 **Quick Help Section**")
     col1, col2 = st.columns(2)
     
     with col1:
         st.link_button("🚨 CALL UCPD", "tel:5106423333")
-        st.caption("Immediate Campus Response")
-        
     with col2:
         st.link_button("🚶 NIGHT SHUTTLE", "tel:5106439255")
-        st.caption("Safe Ride Door-to-Door")
 
     st.divider()
 
-    # --- BRAND STORY ---
+    # 3. Brand Story
     with st.expander("✨ What is Luma?"):
         st.markdown("""
         **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
-        Across cultures, it represents illumination and hope—the "sunset glow" that guides 
-        us through the night. 
-        
         We are your light source in Berkeley, ensuring no student has to walk in the dark alone.
         """)
-        
+
+    # 4. YOUR SIGNATURE (The part you wanted to keep)
     st.markdown("---")
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
