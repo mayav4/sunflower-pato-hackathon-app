@@ -56,7 +56,8 @@ elif page == "Safety Timer":
         st.title("⏱️ Safety Check-In")
     with col_toggle:
         st.write("") 
-        demo_mode = st.toggle("Demo Mode", value=False)
+        # Added back the 'help' parameter for the info button
+        demo_mode = st.toggle("Demo Mode", value=False, help="Sets the check-in interval to 5 seconds for testing and presentation.")
 
     # State Management
     if 'timer_active' not in st.session_state:
@@ -64,24 +65,24 @@ elif page == "Safety Timer":
     if 'emergency_triggered' not in st.session_state:
         st.session_state.emergency_triggered = False
 
-    # --- THE COMFORTING YELLOW ALERT SCREEN ---
+    # --- THE COMFORTING LIGHT PURPLE ALERT SCREEN ---
     if st.session_state.emergency_triggered:
-        # Using a soft Goldenrod yellow for a comforting but urgent look
+        # Changed background-color to a soft Light Purple (#E1D5E7)
         st.markdown("""
             <style>
             .stApp {
-                background-color: #f1c40f !important;
+                background-color: #E1D5E7 !important;
             }
-            h1, h3, p { color: #2c3e50 !important; }
+            h1, h3, p { color: #4A2C5D !important; }
             </style>
-            <div style="text-align: center; padding: 40px; border: 4px solid #2c3e50; border-radius: 20px;">
+            <div style="text-align: center; padding: 40px; border: 4px solid #9b59b6; border-radius: 20px;">
                 <h1 style="font-size: 40px;">🌙 Checking in...</h1>
                 <h3>We haven't heard from you in a bit.</h3>
                 <p style="font-size: 18px;"><b>Your primary emergency contact has been notified</b> that you might need a little extra support right now.</p>
             </div>
         """, unsafe_allow_html=True)
         
-        if st.button("💛 I'm Okay Now (Reset)"):
+        if st.button("💜 I'm Okay Now (Reset)"):
             st.session_state.emergency_triggered = False
             st.session_state.timer_active = False
             st.rerun()
@@ -126,7 +127,7 @@ elif page == "Safety Timer":
                 time.sleep(1)
                 st.rerun()
             
-            # Using a purple color for the countdown to stay on brand
+            # Countdown uses brand purple
             countdown_placeholder.markdown(f"<h1 style='text-align: center; color: #9b59b6; font-size: 60px;'>{s}</h1>", unsafe_allow_html=True)
             time.sleep(1)
             
