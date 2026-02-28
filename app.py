@@ -17,14 +17,25 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+# Function to change page state
+def navigate_to(page_name):
+    st.session_state.current_page = page_name
+
 # 2. Sidebar Navigation
 st.sidebar.title("🛡️ Luma Menu")
-# Match these names EXACTLY in the 'if/elif' blocks below
-page = st.sidebar.radio("Navigation", ["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"])
+
+# We link the radio button to the session state
+page = st.sidebar.radio(
+    "Navigation", 
+    ["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"],
+    index=["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"].index(st.session_state.current_page),
+    key="nav_radio"
+)
+# Sync the state if the user clicks the sidebar manually
+st.session_state.current_page = page
 
 # --- PAGE 1: HOME ---
 if page == "Homepage":
-    # 1. Sidebar Instruction & Logo
     st.markdown("<p style='text-align: left; color: #9b59b6; font-size: 14px;'>⬅️ Click the arrow in the upper left corner to open the menu</p>", unsafe_allow_html=True)
     
     logo_path = "luma_logo.jpeg"
@@ -44,15 +55,6 @@ if page == "Homepage":
     row2_col1, row2_col2 = st.columns(2)
     
     with row1_col1:
-        # Red button style for 911
-        st.markdown("""
-            <style>
-            div[data-testid="stHorizontalBlock"] > div:nth-child(1) button {
-                border: 2px solid #ff4757 !important;
-                color: #ff4757 !important;
-            }
-            </style>
-        """, unsafe_allow_html=True)
         st.link_button("🚨 CALL 911", "tel:911")
     with row1_col2:
         st.link_button("👮 CALL UCPD", "tel:5106423333")
@@ -61,36 +63,31 @@ if page == "Homepage":
     with row2_col2:
         st.link_button("🚌 SHUTTLE", "tel:5106439255")
 
-    # 3. NEW SECTION: ADD EMERGENCY CONTACTS
+    # 3. THE FIXED BUTTON
     st.markdown("---")
     st.subheader("👤 Personal Safety Setup")
     st.write("Ensure Luma knows who to reach out to if you miss a check-in.")
     
+    # We use the navigate_to function here
     if st.button("➕ Add Your Emergency Contacts"):
         st.session_state.current_page = "Emergency Contacts"
         st.rerun()
 
     st.divider()
 
-    # 4. Brand Story
+    # 4. Brand Story & Guide
     st.markdown("### ✨ What is Luma?")
-    st.markdown("""
-    **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
-    We are your light source in Berkeley, ensuring no student has to walk in the dark alone. 
-    """)
+    st.markdown("We are your light source in Berkeley, ensuring no student has to walk in the dark alone.")
 
-    # 5. Sidebar Guide
-    st.markdown("### 🛠️ How to use Luma")
     st.info("""
-    Open the **Sidebar Menu** on the left to explore our safety tools:
-    * **Check-in Timer:** Set a timer that turns the screen purple and notifies your contact.
-    * **Berkeley Blue Lights:** Interactive map of campus shuttle stops and blue light phones.
-    * **Exit Phrase Generator:** Believable excuses to help you leave uncomfortable situations.
-    * **Emergency Contacts:** Full list of campus and local safety resources.
-    * **Safety Chatbot:** AI assistant for immediate safety advice or planning.
+    **Sidebar Guide:**
+    * **Check-in Timer:** Automated safety pings.
+    * **Berkeley Blue Lights:** Interactive map.
+    * **Exit Phrases:** Excuses to leave safely.
+    * **Emergency Contacts:** Full directory.
+    * **Safety Chatbot:** AI advice.
     """)
 
-    st.markdown("---")
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
 # --- PAGE 2: SAFETY TIMER (Check-in Timer) ---
