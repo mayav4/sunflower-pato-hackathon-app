@@ -81,14 +81,28 @@ elif page == "Safety Timer":
 
 # --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Berkeley Blue Lights":
-    st.title("🗺️ Blue Light Locations")
-    st.write("Berkeley emergency phones are marked by blue lights. Find the nearest one:")
-    
-    st.info("📍 Sproul Plaza | 📍 Memorial Glade | 📍 West Circle | 📍 Evans Hall | 📍 North Gate | 📍 RSF")
-    
-    # Static Image for Demo
-    st.image("https://ucpd.berkeley.edu/sites/default/files/styles/open_graph_image/public/blue_light_phone.jpg", caption="Look for these on campus.")
+    st.title("🗺️ Safety Map")
 
+    st.write("""
+    This map shows approximate locations of:
+    - 🔵 Blue light emergency phones
+    - 🚏 Bus stops
+    - 🚌 Night shuttle areas
+    - 👮 Campus police
+    """)
+
+    # Example coordinates (demo only)
+    data = {
+        "lat": [37.8716, 37.8704, 37.8691],
+        "lon": [-122.2728, -122.2692, -122.2680]
+    }
+
+    st.map(data)
+
+    st.info("""
+    ⚠ This is a prototype map with approximate markers.
+    For real navigation use official campus resources.
+    """)
 # --- PAGE 4: PHRASE GENERATOR ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
