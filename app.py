@@ -141,61 +141,102 @@ elif page == "Check-in Timer":
     if 'timer_active' not in st.session_state: st.session_state.timer_active = False
     if 'emergency_triggered' not in st.session_state: st.session_state.emergency_triggered = False
 
-    st.title("⏱️ Safety Check-In")
-    demo_mode = st.toggle("Demo Mode", value=False)
+    col_title, col_toggle = st.columns([3, 1])
+    with col_title:
+        st.title("⏱️ Safety Check-In")
+    with col_toggle:
+        st.write("") 
+        # The 'help' parameter adds the little info button next to the toggle
+        demo_mode = st.toggle("Demo Mode", value=False, help="Sets the check-in interval to 5 seconds for testing.")
 
+    # --- THE EMERGENCY ALERT SCREEN (Dark Purple Mode) ---
     if st.session_state.emergency_triggered:
         st.markdown(f"""
-            <style>.stApp {{ background-color: #E1D5E7 !important; }}</style>
-            <div style="text-align: center; padding: 40px; border: 4px solid #9b59b6; border-radius: 20px;">
-                <h1>🌙 Emergency Alert</h1>
-                <h3><b>{st.session_state.primary_contact}</b> has been notified.</h3>
-                <p>Stay where you are or head to a Blue Light phone.</p>
+            <style>
+            /* This overrides the whole app background to Dark Purple only when triggered */
+            .stApp {{ background-color: #2e004f !important; }} 
+            
+            /* Force all text in this mode to be white */
+            h1, h2, h3, p, span, div {{ color: #ffffff !important; }}
+            
+            /* Add a glowing border to the alert box */
+            .alert-box {{
+                text-align: center; 
+                padding: 40px; 
+                border: 3px solid #9b59b6; 
+                border-radius: 20px;
+                background-color: #3d0066;
+                box-shadow: 0px 0px 20px #9b59b6;
+                margin-bottom: 20px;
+            }}
+            </style>
+            
+            <div class="alert-box">
+                <h1 style="font-size: 40px; margin-bottom: 10px;">🌙 Luma Alert</h1>
+                <h3 style="color: #e1d5e7 !important;">Check-in Window Expired</h3>
+                <p style="font-size: 18px; margin-top: 20px;">
+                    <b>{st.session_state.primary_contact}</b> has been notified 
+                    that you may need assistance.
+                </p>
+                <p style="font-size: 14px; opacity: 0.8;">Your GPS coordinates and safety status were sent.</p>
             </div>
         """, unsafe_allow_html=True)
-        if st.button("I'm Okay Now (Reset)"):
+        
+        if st.button("✅ I'm Okay Now (Reset App)"):
             st.session_state.emergency_triggered = False
             st.session_state.timer_active = False
             st.rerun()
-        st.stop()
+        st.stop() 
 
-    check_interval = st.selectbox("Check in every:", [1, 2, 5, 10], index=1, format_func=lambda x: f"{x} Mins")
-    reaction_time = st.slider("Response window (seconds):", 5, 60, 15)
+    # --- NORMAL TIMER SETTINGS ---
+    st.write("Luma is here to walk with you. Set your check-in window below.")
+    
+    col_a, col_b = st.columns(2)
+    with col_a:
+        check_interval = st.selectbox("Check in every:", [1, 2, 5, 10], index=1, format_func=lambda x: f"{x} Mins")
+    with col_b:
+        reaction_time = st.slider("Response window (seconds):", 5, 60, 15)
 
     if not st.session_state.timer_active:
         if st.button("🚀 Start My Protected Walk"):
             st.session_state.timer_active = True
             st.rerun()
     else:
-        if st.button("🏠 I'm Safely Home"):
+        if st.button("🏠 I'm Safely Home (Stop)"):
             st.session_state.timer_active = False
             st.rerun()
-        
+
+        # Timer Logic
         wait_time = 5 if demo_mode else (check_interval * 60)
+        st.info(f"✨ **Luma is protecting you.** Next check-in in {wait_time}s.")
         progress_bar = st.progress(0)
+        
+        # Countdown to the "Are you okay?" prompt
         for i in range(wait_time):
             time.sleep(1)
             progress_bar.progress((i + 1) / wait_time)
         
-        st.warning("Are you okay?")
-        if st.button("✅ I AM SAFE"):
-            st.rerun()
+        # The Check-in Prompt
+        st.markdown("<h3 style='text-align: center;'>Are you doing okay?</h3>", unsafe_allow_html=True)
+        btn_placeholder = st.empty()
         
-        countdown = st.empty()
+        # Button to confirm safety
+        safe_confirm = btn_placeholder.button("✅ I AM SAFE", key="checkin_btn")
+        
+        countdown_placeholder = st.empty()
         for s in range(reaction_time, -1, -1):
-            countdown.header(f"Emergency Alert in: {s}s")
+            if safe_confirm:
+                st.success("Great! Resetting for your next window...")
+                time.sleep(1)
+                st.rerun()
+            
+            # Large, visible countdown numbers for the demo
+            countdown_placeholder.markdown(f"<h1 style='text-align: center; color: #9b59b6; font-size: 80px;'>{s}</h1>", unsafe_allow_html=True)
             time.sleep(1)
+            
             if s == 0:
                 st.session_state.emergency_triggered = True
                 st.rerun()
-
-# --- REMAINING PAGES (MAP, EXIT PHRASES, CHATBOT) ---
-elif page == "Berkeley Blue Lights":
-    st.header("📍 Interactive Night Safety Map")
-    m = folium.Map(location=[37.8715, -122.2590], zoom_start=15, tiles="CartoDB dark_matter")
-    st_folium(m, width=700, height=500)
-
-# --- PAGE 4: EXIT PHRASES ---
 # --- PAGE 4: EXIT PHRASES ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
