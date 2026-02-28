@@ -20,35 +20,37 @@ page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley 
 
 # --- PAGE 1: HOME ---
 if page == "Home & Info":
-    # Custom Purple Moon Icon using Markdown/HTML
+    # Centered Header
     st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
     
-    # Hero Image/Graphic - A purple-themed moon
-    # I've linked a beautiful purple moon graphic for you
-    st.image("https://img.freepik.com/premium-vector/purple-moon-logo-design_677402-452.jpg", width=200)
+    # Luma Logo/Graphic
+    st.image("https://img.freepik.com/premium-vector/purple-moon-logo-design_677402-452.jpg", width=150)
     
-    st.subheader("Your Radiance in the Dark.")
+    st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark.</h3>", unsafe_allow_html=True)
+
+    # --- THE "RIGHT NOW" SECTION ---
+    st.error("🆘 **Quick Help Section**")
+    col1, col2 = st.columns(2)
     
-    # The Meaning of Luma
-    with st.container():
-        st.markdown("""
-        ### ✨ The Meaning Behind the Name
-        **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
-        Across cultures, it represents illumination and hope—the "moonlight glow" that guides 
-        us through the night. 
+    with col1:
+        st.link_button("🚨 CALL UCPD", "tel:5106423333")
+        st.caption("Immediate Campus Response")
         
-        We chose this name because our mission is to be your light source in Berkeley, 
-        ensuring that no student has to walk in the dark alone.
-        """)
+    with col2:
+        st.link_button("🚶 NIGHT SHUTTLE", "tel:5106439255")
+        st.caption("Safe Ride Door-to-Door")
 
     st.divider()
-    
-    # Pretty Feature Cards
-    col1, col2 = st.columns(2)
-    with col1:
-        st.info("🛰️ **Tracked Walks**\n\nTimed safety check-ins.")
-    with col2:
-        st.info("💡 **Illumination**\n\nMapping Berkeley's Blue Lights.")
+
+    # --- BRAND STORY ---
+    with st.expander("✨ What is Luma?"):
+        st.markdown("""
+        **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
+        Across cultures, it represents illumination and hope—the "sunset glow" that guides 
+        us through the night. 
+        
+        We are your light source in Berkeley, ensuring no student has to walk in the dark alone.
+        """)
         
     st.markdown("---")
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
