@@ -106,61 +106,28 @@ elif page == "Safety Timer":
 
 # --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Berkeley Blue Lights":
-    import pandas as pd
+    st.title("🚌 Night Shuttle & Safety Map")
 
-    st.title("🗺️ UC Berkeley Safety + Night Shuttle Map")
     st.write("""
-    This map shows approximate locations of:
-    - 🔵 Blue light emergency phones
-    - 🚌 Night Safety Shuttle stops
-    - 👮 Campus Safety resources
-    - 🚇 Transit (BART & buses)
+    Night shuttle service connects campus with transit and housing areas during evening hours.
+    This map is a visual reference of key locations.
     """)
 
-    # Approximate locations including night shuttle stops
-    data = pd.DataFrame({
-        "lat": [
-            37.8704,  # Night Shuttle: Memorial Glade / Moffitt
-            37.8726,  # Night Shuttle: West Circle
-            37.8730,  # Night Shuttle: Evans Hall / Hearst
-            37.8688,  # Transit stop: Shattuck @ Allston
-            37.8668,  # Transit stop: Piedmont & Bancroft
-            37.8712,  # Downtown Berkeley BART
-            37.8717,  # Blue light emergency (Sproul Plaza)
-            37.8721   # Campus Police/UCPD
-        ],
-        "lon": [
-            -122.2690,
-            -122.2680,
-            -122.2730,
-            -122.2674,
-            -122.2550,
-            -122.2681,
-            -122.2591,
-            -122.2591
-        ]
-    })
+    # Use a static image map instead of interactive pins
+    st.image("berkeley_night_map.png", caption="UC Berkeley Night Shuttle & Safety Zones")
 
-    st.map(data)
-
-    st.subheader("📍 Shuttle & Safety Locations Explained")
+    st.subheader("Locations (Reference)")
 
     st.write("""
-    🚌 **Night Safety Shuttle stops (approximate):**
-    - Memorial Glade / Moffitt Library
-    - West Circle
-    - Evans Hall / Hearst Mining Circle
-    - Shattuck @ Allston (near bus/BART access)
-    - Piedmont & Bancroft (residential area)
-
-    🔵 **Blue light emergency phones:** Example campus phone near Sproul Plaza  
-    👮 **Campus safety services:** UC Berkeley Police services area  
-    🚇 **Downtown Berkeley BART:** Major transit connection point
+    🚌 Night Shuttle pickup areas (approximate)  
+    🚏 Bus and transit connections  
+    🔵 Blue light emergency phones  
+    👮 Campus safety resources
     """)
 
     st.info("""
-    ⚠ This map is a prototype with approximate markers for demo purposes.
-    For real navigation, check official Bear Transit and campus safety apps.
+    This is a prototype reference map.
+    For real-time transit and navigation, use official campus transportation services.
     """)
 # --- PAGE 4: PHRASE GENERATOR ---
 elif page == "Exit Phrase Generator":
