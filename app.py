@@ -146,32 +146,43 @@ elif page == "Berkeley Blue Lights":
         icon=folium.Icon(color="red", icon="shield", prefix="fa")
     ).add_to(m)
 
-    # 4. Pin: Bear Transit Night Shuttle Stops (Verified Locations)
+    # 4. Pin: Bear Transit Night Shuttle Stops (Verified Locations from PDF)
+    # Stop numbers added for reference based on provided map
     stops = [
-        {"name": "Moffitt Library (University Dr)", "loc": [37.8727, -122.2606]}, # Verified
-        {"name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
-        {"name": "Shattuck & University", "loc": [37.8715, -122.2682]},
-        {"name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
-        {"name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600]},
-        {"name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573]},
-        {"name": "Greek Theatre (Gayley & Univ Dr)", "loc": [37.8742, -122.2547]},
-        {"name": "International House (Piedmont & Bancroft)", "loc": [37.8708, -122.2527]},
-        {"name": "Clark Kerr Horseshoe", "loc": [37.8672, -122.2460]},
-        {"name": "Unit 2 (Piedmont)", "loc": [37.8655, -122.2548]},
-        {"name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530]},
-        {"name": "Unit 3 (Durant & Telegraph)", "loc": [37.8678, -122.2592]},
-        {"name": "Mining Circle", "loc": [37.8741, -122.2576]},
-        {"name": "RSF/Tang Center", "loc": [37.8693, -122.2625]}
+        {"num": "01", "name": "Moffitt Library (University Dr)", "loc": [37.8727, -122.2606]},
+        {"num": "02", "name": "West Circle", "loc": [37.8719, -122.2587]},
+        {"num": "03", "name": "Hearst & Walnut", "loc": [37.8735, -122.2670]},
+        {"num": "04", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681]},
+        {"num": "05", "name": "North Gate (Hearst & Euclid)", "loc": [37.8753, -122.2600]},
+        {"num": "06", "name": "Cory Hall (Hearst & Le Roy)", "loc": [37.8752, -122.2573]},
+        {"num": "07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547]},
+        {"num": "08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546]},
+        {"num": "09", "name": "Unit 3 (Channing & Telegraph)", "loc": [37.8678, -122.2592]},
+        {"num": "10", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
+        {"num": "11", "name": "Unit 1 (Channing & College)", "loc": [37.8675, -122.2530]},
+        {"num": "12", "name": "Unit 2 (College & Plaste)", "loc": [37.8655, -122.2548]},
+        {"num": "13", "name": "International House", "loc": [37.8708, -122.2527]},
+        {"num": "14", "name": "Channing Circle", "loc": [37.8673, -122.2519]},
+        {"num": "15", "name": "Warring & Channing", "loc": [37.8672, -122.2505]},
+        {"num": "16", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505]},
+        {"num": "17", "name": "Piedmont & Bancroft", "loc": [37.8708, -122.2527]},
+        {"num": "18", "name": "Martinez Commons", "loc": [37.8675, -122.2562]},
+        {"num": "19", "name": "Unit 1", "loc": [37.8675, -122.2530]},
+        {"num": "20", "name": "RSF/Tang Center", "loc": [37.8693, -122.2625]},
+        {"num": "21", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680]},
+        {"num": "22", "name": "Shattuck & University", "loc": [37.8715, -122.2682]},
+        {"num": "23", "name": "Mining Circle", "loc": [37.8741, -122.2576]},
+        {"num": "24", "name": "Moffitt Library", "loc": [37.8727, -122.2606]}
     ]
     for stop in stops:
         folium.Marker(
             stop["loc"],
-            popup=f"<b>Stop:</b> {stop['name']}",
+            popup=f"<b>Stop {stop['num']}:</b> {stop['name']}",
             tooltip=stop["name"],
             icon=folium.Icon(color="purple", icon="bus", prefix="fa")
         ).add_to(m)
         
-    # Temporary Closure Note
+    # Temporary Closure Note from Map
     st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
 
     # 5. Pin: Blue Light Phone Locations
