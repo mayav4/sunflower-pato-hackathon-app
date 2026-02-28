@@ -30,21 +30,54 @@ if page == "Home & Info":
         st.write("- Stay in well-lit areas (like Sproul Plaza).")
         st.write("- Trust your instincts—if a situation feels wrong, leave immediately.")
 
-# --- PAGE 2: TIMER ---
+# --- PAGE 2: TIMER (UPDATED) ---
 elif page == "Safety Timer":
-    st.title("⏱️ Safety Timer")
-    st.write("If you don't 'Check In' before the timer ends, we'll trigger an emergency alert.")
+    st.title("⏱️ Safety Check-In")
+    st.write("Heading out? Set your walk time. If you don't 'Check In' before the clock hits zero, we alert your emergency contacts.")
     
-    mins = st.selectbox("Set walk duration (minutes):", [1, 5, 10, 15, 30])
+    # 1. User sets the time
+    mins = st.selectbox("How many minutes is your walk?", [1, 5, 10, 15, 30], index=0)
     
-    if st.button("Start Countdown"):
-        placeholder = st.empty()
+    # We use "session_state" so the app remembers if the timer is running
+    if 'timer_running' not in st.session_state:
+        st.session_state.timer_running = False
+
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        start_btn = st.button("🚀 Start My Walk")
+    with col2:
+        stop_btn = st.button("🏠 I'm Safe! (Stop)")
+
+    if start_btn:
+        st.session_state.timer_running = True
+
+    if st.session_state.timer_running:
         seconds = mins * 60
-        for i in range(seconds, 0, -1):
-            placeholder.metric("Time Remaining", f"{i//60:02d}:{i%60:02d}")
-            time.sleep(1)
-        st.error("🚨 TIMER EXPIRED! ALERTING EMERGENCY CONTACTS...")
-        st.toast("Emergency Notification Sent (Simulation)")
+        progress_bar = st.progress(1.0) # Visual bar at the top
+        status_text = st.empty()
+        
+        for i in range(seconds, -1, -1):
+            # If the user clicks "Stop" while the loop is running
+            if stop_btn:
+                st.session_state.timer_running = False
+                status_text.success("🎉 You're safe! Timer deactivated.")
+                break
+            
+            # Update the visuals
+            percent_filled = i / seconds
+            progress_bar.progress(percent_filled)
+            
+            # Change text color to Red when under 10 seconds
+            display_color = "red" if i <= 10 else "white"
+            status_text.markdown(f"<h1 style='text-align: center; color: {display_color};'>{i//60:02d}:{i%60:02d}</h1>", unsafe_allow_html=True)
+            
+            time.sleep(1) # Wait one second
+            
+            if i == 0:
+                st.session_state.timer_running = False
+                st.error("🚨 ALERT: Timer expired! Emergency contacts have been pinged.")
+                st.balloons() # Visual 'alert' for the demo
 
 # --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Berkeley Blue Lights":
