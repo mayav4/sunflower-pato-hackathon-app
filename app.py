@@ -19,7 +19,7 @@ st.markdown("""
 
 # 2. Sidebar Navigation
 st.sidebar.title("🛡️ Luma Menu")
-page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"])
+page = st.sidebar.radio("Navigation", ["Homepage", "Check-in Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"])
 
 # --- PAGE 1: HOME ---
 if page == "Home & Info":
@@ -36,7 +36,7 @@ if page == "Home & Info":
         else:
             st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark.</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark ✨</h3>", unsafe_allow_html=True)
 
     # 2. Emergency Buttons (Updated with SOS emoji)
     st.error("🆘 **Quick Help Section**")
