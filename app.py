@@ -24,7 +24,7 @@ page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley 
 # --- PAGE 1: HOME ---
 if page == "Home & Info":
     # 1. High-Resolution Logo Logic
-    logo_path = "luma_logo.png"
+    logo_path = "luma_logo.jpeg"
     
     if os.path.exists(logo_path):
         st.image(logo_path, width=250, use_container_width=False)
