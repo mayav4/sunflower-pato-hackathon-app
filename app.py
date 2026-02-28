@@ -142,10 +142,10 @@ elif page == "Check-in Timer":
                 st.session_state.emergency_triggered = True
                 st.rerun()
 
-# --- PAGE 3: BLUE LIGHT MAP (PDF ACCURACY & PATHWAYS) ---
+# --- PAGE 3: BLUE LIGHT MAP (NO PATH LINES) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
-    st.write("Zoom in to see exact stop locations and paths.")
+    st.write("Zoom in to see exact stop locations.")
     
     # 1. Schedule Information Section
     st.subheader("🚌 Night Shuttle Schedule")
@@ -222,26 +222,7 @@ elif page == "Berkeley Blue Lights":
             icon=folium.Icon(color=icon_color, icon="bus", prefix="fa")
         ).add_to(m)
         
-    # 5. Add Pathways (Polylines based on PDF)
-    # North Loop Path (Orange) - Wraps around campus
-    north_path = [
-        [37.8727, -122.2606], [37.8705, -122.2682], [37.8735, -122.2670],
-        [37.8753, -122.2600], [37.8752, -122.2573], [37.8749, -122.2547],
-        [37.8738, -122.2546], [37.8698, -122.2533], [37.8708, -122.2527],
-        [37.8672, -122.2505], [37.8696, -122.2595], [37.8680, -122.2680],
-        [37.8727, -122.2606]
-    ]
-    folium.PolyLine(north_path, color="orange", weight=4, opacity=0.8, tooltip="North Loop (N)").add_to(m)
-
-    # South Loop Path (Purple) - Through Mining Circle/Glade
-    south_path = [
-        [37.8701, -122.2681], [37.8719, -122.2587], [37.8741, -122.2576],
-        [37.8693, -122.2625], [37.8678, -122.2592], [37.8675, -122.2562],
-        [37.8675, -122.2530], [37.8655, -122.2548], [37.8708, -122.2527],
-        [37.8672, -122.2460], [37.8683, -122.2505], [37.8701, -122.2555],
-        [37.8698, -122.2575], [37.8680, -122.2680], [37.8701, -122.2681]
-    ]
-    folium.PolyLine(south_path, color="purple", weight=4, opacity=0.8, tooltip="South Loop (S)").add_to(m)
+    # 5. REMOVED PATHWAYS (Polylines)
         
     # 6. Temporary Closure Note from PDF
     st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
@@ -272,8 +253,8 @@ elif page == "Berkeley Blue Lights":
     st.markdown("""
     ### Legend
     * 🔴 **Red Shield:** UCPD Police Station
-    * 🟠 **Orange Line/Bus:** North Loop Stop (N)
-    * 🟣 **Purple Line/Bus:** South Loop Stop (S)
+    * 🟠 **Orange Bus:** North Loop Stop (N)
+    * 🟣 **Purple Bus:** South Loop Stop (S)
     * 🔵 **Blue Circle:** Blue Light Phone
     """)
 
