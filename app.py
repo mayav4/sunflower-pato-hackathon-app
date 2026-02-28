@@ -118,3 +118,41 @@ elif page == "Emergency Contacts":
     st.write("**Personal Contacts:**")
     st.write("- Primary: Mom (Simulated)")
     st.write("- Secondary: Roommate (Simulated)")
+
+# --- PAGE 6: SAFETY CHATBOT ---
+elif page == "Safety Chatbot":
+    st.title("🤖 AI Safety Assistant")
+    st.write("Need quick advice? Tell the assistant what's happening. (Simulated AI)")
+
+    # Use a container to make it look like a chat window
+    with st.container():
+        user_msg = st.text_input("Describe your situation:", placeholder="e.g., Someone is following me")
+
+        if st.button("Get Safety Plan"):
+            if user_msg:
+                msg = user_msg.lower()
+                st.divider()
+                st.write("### 🛡️ Recommended Action Plan:")
+                
+                # The "Mock" Logic
+                if "follow" in msg or "behind" in msg:
+                    st.warning("1. Do not go home yet. You don't want them to know where you live.")
+                    st.info("2. Head to the nearest 'Blue Light' phone or a 24-hour business (like the 7-Eleven on Bancroft).")
+                    st.write("3. Call UCPD (510-642-3333) and tell them your location.")
+                
+                elif "scared" in msg or "dark" in msg or "unsafe" in msg:
+                    st.info("1. Call the Night Safety Shuttle (510-643-9255) for a free door-to-door ride.")
+                    st.write("2. Call a friend or family member and keep them on the line until you are inside.")
+                    st.write("3. Walk in the middle of the sidewalk, away from bushes or alleys.")
+                
+                elif "party" in msg or "drink" in msg:
+                    st.write("1. Never leave your drink unattended.")
+                    st.write("2. Use the 'buddy system'—don't leave without the friends you came with.")
+                    st.info("3. If you feel unwell, head to the Tang Center or contact a sober friend immediately.")
+                
+                else:
+                    st.write("I'm here to help! If you feel uneasy, the best first step is to call a friend or UCPD. Would you like to see the 'Emergency Contacts' page?")
+                
+                st.balloons() # Fun feedback for the demo!
+            else:
+                st.warning("Please type something so the assistant can help!")
