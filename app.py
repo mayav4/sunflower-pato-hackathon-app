@@ -237,6 +237,129 @@ elif page == "Check-in Timer":
             if s == 0:
                 st.session_state.emergency_triggered = True
                 st.rerun()
+# --- PAGE 3: BLUE LIGHT MAP (WITH INTERACTIVE SCHEDULES) ---
+elif page == "Berkeley Blue Lights":
+    st.header("📍 Interactive Night Safety Map")
+    st.write("Hover over bus stops for arrival times. Zoom in to see exact stop locations.")
+    
+    # 1. Schedule Information Section
+    st.subheader("🚌 Night Shuttle Schedule Summary")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("<span style='color:orange'>●</span> **North Loop (N)**", unsafe_allow_html=True)
+        st.caption("7:45 PM - 2:15 AM | Every 30 mins [cite: 1]")
+    with col2:
+        st.markdown("<span style='color:purple'>●</span> **South Loop (S)**", unsafe_allow_html=True)
+        st.caption("7:30 PM - 3:00 AM | Every 30 mins [cite: 1]")
+    st.divider()
+
+    # 2. Initialize Map
+    m = folium.Map(
+        location=[37.8715, -122.2590], 
+        zoom_start=15,
+        tiles="CartoDB dark_matter"
+    )
+
+    # 3. Pin: UCPD Police Station
+    folium.Marker(
+        [37.8698, -122.2595],
+        popup="<b>UCPD Headquarters</b><br>1 Sproul Hall (Basement)",
+        tooltip="Police Station",
+        icon=folium.Icon(color="red", icon="shield", prefix="fa")
+    ).add_to(m)
+
+    # 4. Define and Pin Shuttle Stops with Specific Schedules
+    # Schedule data extracted from pages 3 and 4 of the provided PDF
+    
+    # --- NORTH LOOP SCHEDULE DATA (Mon-Fri) ---
+    north_schedule = "7:45 PM, 8:15 PM, 8:45 PM, 9:15 PM, 9:45 PM, 10:15 PM, 10:45 PM, 11:15 PM, 11:45 PM, 12:15 AM, 12:45 AM, 1:15 AM, 1:45 AM"
+    
+    # --- SOUTH LOOP SCHEDULE DATA (Mon-Fri) ---
+    south_schedule = "7:30 PM, 8:00 PM, 8:30 PM, 9:00 PM, 9:30 PM, 10:00 PM, 10:30 PM, 11:00 PM, 11:30 PM, 12:00 AM, 12:30 AM, 1:00 AM, 1:30 AM, 2:00 AM, 2:30 AM"
+
+    stops = [
+        # North Loop Stops
+        {"num": "N01", "name": "Moffitt Library", "loc": [37.8727, -122.2606], "sched": north_schedule},
+        {"num": "N02", "name": "Shattuck & University", "loc": [37.8715, -122.2682], "sched": north_schedule},
+        {"num": "N03", "name": "Hearst & Walnut", "loc": [37.8735, -122.2670], "sched": north_schedule},
+        {"num": "N05", "name": "North Gate", "loc": [37.8753, -122.2600], "sched": north_schedule},
+        {"num": "N06", "name": "Cory Hall", "loc": [37.8752, -122.2573], "sched": north_schedule},
+        {"num": "N07", "name": "Highland & Ridge", "loc": [37.8749, -122.2547], "sched": north_schedule},
+        {"num": "N08", "name": "Foothill (Unit 4)", "loc": [37.8738, -122.2546], "sched": north_schedule},
+        {"num": "N11", "name": "Bowles Hall", "loc": [37.8698, -122.2533], "sched": north_schedule},
+        {"num": "N13", "name": "International House", "loc": [37.8708, -122.2527], "sched": north_schedule},
+        {"num": "N14", "name": "Channing Circle", "loc": [37.8673, -122.2519], "sched": north_schedule},
+        {"num": "N15", "name": "Warring & Channing", "loc": [37.8672, -122.2505], "sched": north_schedule},
+        {"num": "N19", "name": "Student Union/Sather Gate", "loc": [37.8696, -122.2595], "sched": north_schedule},
+        {"num": "N20", "name": "RSF/Tang Center", "loc": [37.8693, -122.2625], "sched": north_schedule},
+        {"num": "N21", "name": "Bancroft & Shattuck", "loc": [37.8680, -122.2680], "sched": north_schedule},
+        {"num": "N22", "name": "Berkeley Public Library", "loc": [37.8705, -122.2682], "sched": north_schedule},
+        {"num": "N23", "name": "Hearst Mining Circle", "loc": [37.8741, -122.2576], "sched": north_schedule},
+        
+        # South Loop Stops
+        {"num": "S01", "name": "Downtown Berkeley BART", "loc": [37.8701, -122.2681], "sched": south_schedule},
+        {"num": "S03", "name": "West Circle", "loc": [37.8719, -122.2587], "sched": south_schedule},
+        {"num": "S06", "name": "Shattuck & Durant", "loc": [37.8677, -122.2681], "sched": south_schedule},
+        {"num": "S07", "name": "Dwight & Fulton", "loc": [37.8660, -122.2655], "sched": south_schedule},
+        {"num": "S08", "name": "Ellsworth Parking Garage", "loc": [37.8675, -122.2625], "sched": south_schedule},
+        {"num": "S09", "name": "Unit 3", "loc": [37.8678, -122.2592], "sched": south_schedule},
+        {"num": "S10", "name": "Martinez Commons", "loc": [37.8675, -122.2562], "sched": south_schedule},
+        {"num": "S11", "name": "Unit 1", "loc": [37.8675, -122.2530], "sched": south_schedule},
+        {"num": "S12", "name": "Unit 2", "loc": [37.8655, -122.2548], "sched": south_schedule},
+        {"num": "S13", "name": "Dwight & Piedmont", "loc": [37.8655, -122.2520], "sched": south_schedule},
+        {"num": "S14", "name": "Clark Kerr - Horseshoe", "loc": [37.8672, -122.2460], "sched": south_schedule},
+        {"num": "S15", "name": "Warring & Bancroft", "loc": [37.8683, -122.2505], "sched": south_schedule},
+        {"num": "S17", "name": "Wurster Hall", "loc": [37.8701, -122.2555], "sched": south_schedule},
+        {"num": "S18", "name": "Hearst Gym", "loc": [37.8698, -122.2575], "sched": south_schedule},
+        {"num": "S23", "name": "Hearst Mining Circle", "loc": [37.8741, -122.2576], "sched": south_schedule}
+    ]
+    
+    for stop in stops:
+        icon_color = "orange" if stop["num"].startswith("N") else "purple"
+        
+        # Format popup with schedule
+        popup_text = f"<b>Stop {stop['num']}:</b> {stop['name']}<br><br><b>Arrival Times:</b><br>{stop['sched']}"
+        
+        folium.Marker(
+            stop["loc"],
+            popup=popup_text,
+            tooltip=stop["name"],
+            icon=folium.Icon(color=icon_color, icon="bus", prefix="fa")
+        ).add_to(m)
+        
+    # 5. Temporary Closure Note
+    st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction[cite: 2].")
+
+    # 6. Pin: Blue Light Phone Locations
+    blue_lights = [
+        {"loc": [37.8715, -122.2605], "name": "Doe Library"},
+        {"loc": [37.8695, -122.2595], "name": "Sproul Plaza"},
+        {"loc": [37.8752, -122.2592], "name": "North Gate"},
+        {"loc": [37.8655, -122.2538], "name": "Unit 2"},
+        {"loc": [37.8735, -122.2580], "name": "Mining Circle"},
+        {"loc": [37.8680, -122.2685], "name": "BART Station"},
+        {"loc": [37.8745, -122.2540], "name": "Greek Theatre"}
+    ]
+    for bl in blue_lights:
+        folium.CircleMarker(
+            location=bl["loc"],
+            radius=8,
+            popup=f"<b>Blue Light Phone</b><br>{bl['name']}",
+            color="blue",
+            fill=True,
+            fill_color="blue"
+        ).add_to(m)
+
+    # 7. Render Map
+    st_folium(m, width=700, height=500)
+    
+    st.markdown("""
+    ### Legend
+    * 🔴 **Red Shield:** UCPD Police Station
+    * 🟠 **Orange Bus:** North Loop Stop (N)
+    * 🟣 **Purple Bus:** South Loop Stop (S)
+    * 🔵 **Blue Circle:** Blue Light Phone
+    """)
 # --- PAGE 4: EXIT PHRASES ---
 elif page == "Exit Phrase Generator":
     st.title("💬 Exit Phrase Generator")
