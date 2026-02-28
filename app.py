@@ -167,6 +167,6 @@ elif page == "Safety Chatbot":
                 else:
                     st.write("I'm here to help! If you feel uneasy, the best first step is to call a friend or UCPD. Would you like to see the 'Emergency Contacts' page?")
                 
-                st.balloons() # Fun feedback for the demo!
+                st.success("Safety plan generated.")
             else:
                 st.warning("Please type something so the assistant can help!")
