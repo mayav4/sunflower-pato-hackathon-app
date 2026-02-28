@@ -58,19 +58,29 @@ if page == "Home & Info":
 
 # --- PAGE 2: TIMER ---
 elif page == "Safety Timer":
-    st.title("⏱️ Safety Check-In")
+    # 1. Top Row: Title on left, Demo Toggle on right
+    col_title, col_toggle = st.columns([3, 1])
     
-    # --- TESTING OVERRIDE (Comment out the line below for the real demo!) ---
-    test_mode = True  # Set to False or comment out to use real minutes
-    # -----------------------------------------------------------------------
+    with col_title:
+        st.title("⏱️ Safety Check-In")
+    
+    with col_toggle:
+        st.write("") # Just for spacing
+        demo_mode = st.toggle("Demo Mode", value=False, help="Sets timer to 5 seconds for testing.")
 
+    # 2. Status Message based on Toggle
+    if demo_mode:
+        st.warning("🚀 **Demo Mode Active:** Timer is set to 5 seconds.")
+    
     st.write("Heading out? Set your walk time. If the clock hits zero, we alert your emergency contacts.")
     
+    # 3. Time Selection
     mins = st.selectbox("How many minutes is your walk?", [1, 5, 10, 15, 30], index=0)
     
     if 'timer_running' not in st.session_state:
         st.session_state.timer_running = False
 
+    # 4. Action Buttons
     col1, col2 = st.columns(2)
     with col1:
         start_btn = st.button("🚀 Start My Walk")
@@ -80,9 +90,10 @@ elif page == "Safety Timer":
     if start_btn:
         st.session_state.timer_running = True
 
+    # 5. Timer Logic
     if st.session_state.timer_running:
-        # LOGIC: If test_mode is True, it uses 5 seconds. Otherwise, it uses mins * 60.
-        seconds = 5 if test_mode else (mins * 60)
+        # If demo_mode is on, use 5 seconds. Otherwise, use mins * 60.
+        seconds = 5 if demo_mode else (mins * 60)
         
         progress_bar = st.progress(1.0)
         status_text = st.empty()
@@ -96,6 +107,7 @@ elif page == "Safety Timer":
             percent_filled = i / seconds if seconds > 0 else 0
             progress_bar.progress(percent_filled)
             
+            # Visual Countdown
             display_color = "red" if i <= 10 else "white"
             status_text.markdown(f"<h1 style='text-align: center; color: {display_color};'>{i//60:02d}:{i%60:02d}</h1>", unsafe_allow_html=True)
             
@@ -104,7 +116,8 @@ elif page == "Safety Timer":
             if i == 0:
                 st.session_state.timer_running = False
                 st.error("🚨 ALERT: Timer expired! Emergency contacts have been pinged.")
-                st.balloons() # Added balloons so you can see the "Alert" trigger clearly
+                st.balloons()
+                
 # --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Safety Map":
     st.header("📍 Interactive Night Safety Map")
