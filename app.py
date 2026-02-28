@@ -24,7 +24,9 @@ page = st.sidebar.radio("Navigation", ["Homepage", "Check-in Timer", "Berkeley B
 
 # --- PAGE 1: HOME ---
 if page == "Homepage":
-    # 1. Centered and Smaller Logo
+    # 1. Sidebar Instruction & Logo
+    st.markdown("<p style='text-align: left; color: #9b59b6; font-size: 14px;'>⬅️ Click the arrow in the upper left corner to open the menu</p>", unsafe_allow_html=True)
+    
     logo_path = "luma_logo.jpeg"
     col_left, col_logo, col_right = st.columns([1, 1, 1])
     
@@ -36,25 +38,58 @@ if page == "Homepage":
 
     st.markdown("<h3 style='text-align: center;'>Your Radiance in the Dark ✨</h3>", unsafe_allow_html=True)
 
-    # 2. Emergency Buttons (Updated with SOS emoji)
+    # 2. Emergency Buttons
     st.error("🆘 **Quick Help Section**")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.link_button("🆘 CALL UCPD", "tel:5106423333")
-    with col2:
-        st.link_button("🚶 NIGHT SHUTTLE", "tel:5106439255")
+    row1_col1, row1_col2 = st.columns(2)
+    row2_col1, row2_col2 = st.columns(2)
+    
+    with row1_col1:
+        # Red button style for 911
+        st.markdown("""
+            <style>
+            div[data-testid="stHorizontalBlock"] > div:nth-child(1) button {
+                border: 2px solid #ff4757 !important;
+                color: #ff4757 !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        st.link_button("🚨 CALL 911", "tel:911")
+    with row1_col2:
+        st.link_button("👮 CALL UCPD", "tel:5106423333")
+    with row2_col1:
+        st.link_button("🚶 BEARWALK", "tel:5106429255")
+    with row2_col2:
+        st.link_button("🚌 SHUTTLE", "tel:5106439255")
+
+    # 3. NEW SECTION: ADD EMERGENCY CONTACTS
+    st.markdown("---")
+    st.subheader("👤 Personal Safety Setup")
+    st.write("Ensure Luma knows who to reach out to if you miss a check-in.")
+    
+    if st.button("➕ Add Your Emergency Contacts"):
+        st.session_state.current_page = "Emergency Contacts"
+        st.rerun()
 
     st.divider()
 
-    # 3. Brand Story (Direct text, no expander)
+    # 4. Brand Story
     st.markdown("### ✨ What is Luma?")
     st.markdown("""
     **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
-    
-    We are your light source in Berkeley, ensuring no student has to walk in the dark alone. Our mission is to transform the way we navigate campus at night—replacing fear with a supportive, glowing community.
+    We are your light source in Berkeley, ensuring no student has to walk in the dark alone. 
     """)
 
-    # 4. Footer
+    # 5. Sidebar Guide
+    st.markdown("### 🛠️ How to use Luma")
+    st.info("""
+    Open the **Sidebar Menu** on the left to explore our safety tools:
+    * **Check-in Timer:** Set a timer that turns the screen purple and notifies your contact.
+    * **Berkeley Blue Lights:** Interactive map of campus shuttle stops and blue light phones.
+    * **Exit Phrase Generator:** Believable excuses to help you leave uncomfortable situations.
+    * **Emergency Contacts:** Full list of campus and local safety resources.
+    * **Safety Chatbot:** AI assistant for immediate safety advice or planning.
+    """)
+
     st.markdown("---")
     st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
