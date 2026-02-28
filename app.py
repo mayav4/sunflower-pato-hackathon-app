@@ -104,27 +104,71 @@ elif page == "Safety Timer":
 
 # --- PAGE 3: BLUE LIGHT MAP ---
 elif page == "Berkeley Blue Lights":
-    st.title("🗺️ Safety Map")
+    st.title("🗺️ Safety Map of Campus Resources")
 
     st.write("""
-    This map shows approximate locations of:
+    This map highlights approximate locations of:
     - 🔵 Blue light emergency phones
     - 🚏 Bus stops
     - 🚌 Night shuttle areas
-    - 👮 Campus police
+    - 👮 Campus safety resources
     """)
 
-    # Example coordinates (demo only)
+    # Approximate campus coordinates (prototype markers)
     data = {
-        "lat": [37.8716, 37.8704, 37.8691],
-        "lon": [-122.2728, -122.2692, -122.2680]
+        "lat": [
+            37.8717,  # Sproul Plaza (central campus)
+            37.8704,  # Memorial Glade
+            37.8726,  # West Circle
+            37.8730,  # Evans Hall area
+            37.8721,  # Campus Police (UCPD area)
+            37.8712,  # Downtown Berkeley BART
+            37.8697,  # Bus stop (Bancroft & Telegraph)
+            37.8714,  # Bus stop (University & Shattuck)
+            37.8700   # Night shuttle area (approx.)
+        ],
+        "lon": [
+            -122.2591,
+            -122.2690,
+            -122.2680,
+            -122.2730,
+            -122.2591,
+            -122.2681,
+            -122.2588,
+            -122.2548,
+            -122.2620
+        ]
     }
 
     st.map(data)
 
+    st.subheader("📍 What the Pins Represent")
+
+    st.write("""
+    🔵 Blue light phone — emergency contact point  
+    🚏 Bus stop — public transit access  
+    🚌 Night shuttle — campus safety transportation  
+    👮 Campus resources — safety and police services
+    """)
+
     st.info("""
-    ⚠ This is a prototype map with approximate markers.
-    For real navigation use official campus resources.
+    ⚠ This is a prototype map.
+    Locations are approximate and for educational/demo purposes.
+    For real navigation, use official campus resources.
+    """)
+
+    st.subheader("Campus Resources (Text Reference)")
+
+    st.write("""
+    - Blue light phones: direct emergency contact points  
+    - Bus routes: public transportation stops  
+    - Night shuttles: after-hours campus transit  
+    - Police services: campus safety assistance
+    """)
+
+    st.write("""
+    Resources referenced from campus safety materials for 
+    the University of California, Berkeley.
     """)
 # --- PAGE 4: PHRASE GENERATOR ---
 elif page == "Exit Phrase Generator":
