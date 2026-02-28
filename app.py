@@ -20,15 +20,38 @@ page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley 
 
 # --- PAGE 1: HOME ---
 if page == "Home & Info":
-    st.title("🌙 NightWalk Safety")
-    st.subheader("Your companion for safer night walks at Berkeley.")
-    st.write("Built by first-time coders to empower students to navigate campus with confidence.")
+    # Custom Purple Moon Icon using Markdown/HTML
+    st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
     
-    st.markdown("### 📚 Your Rights")
-    with st.expander("Quick Safety Tips"):
-        st.write("- Share your location with trusted friends.")
-        st.write("- Stay in well-lit areas (like Sproul Plaza).")
-        st.write("- Trust your instincts—if a situation feels wrong, leave immediately.")
+    # Hero Image/Graphic - A purple-themed moon
+    # I've linked a beautiful purple moon graphic for you
+    st.image("https://img.freepik.com/premium-vector/purple-moon-logo-design_677402-452.jpg", width=200)
+    
+    st.subheader("Your Radiance in the Dark.")
+    
+    # The Meaning of Luma
+    with st.container():
+        st.markdown("""
+        ### ✨ The Meaning Behind the Name
+        **Luma** originates from the Latin *lumen*, symbolizing **light, radiance, and brightness**. 
+        Across cultures, it represents illumination and hope—the "sunset glow" that guides 
+        us through the night. 
+        
+        We chose this name because our mission is to be your light source in Berkeley, 
+        ensuring that no student has to walk in the dark alone.
+        """)
+
+    st.divider()
+    
+    # Pretty Feature Cards
+    col1, col2 = st.columns(2)
+    with col1:
+        st.info("🛰️ **Tracked Walks**\n\nTimed safety check-ins.")
+    with col2:
+        st.info("💡 **Illumination**\n\nMapping Berkeley's Blue Lights.")
+        
+    st.markdown("---")
+    st.caption("Created with 💜 for the 2026 Women's Hackathon")
 
 # --- PAGE 2: TIMER (UPDATED) ---
 elif page == "Safety Timer":
