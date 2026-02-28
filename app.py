@@ -21,27 +21,17 @@ st.markdown("""
 st.sidebar.title("🛡️ NightWalk Menu")
 page = st.sidebar.radio("Navigation", ["Home & Info", "Safety Timer", "Berkeley Blue Lights", "Exit Phrase Generator", "Emergency Contacts", "Safety Chatbot"])
 
-# --- PAGE 1: HOME ---
-if page == "Home & Info":
-    import os
-    
-    # 1. High-Resolution Logo Logic
+# 1. High-Resolution Logo Logic
     logo_path = "luma_logo.png"
     
     if os.path.exists(logo_path):
-        import base64
-        # This "Enshrinement" trick forces the browser to show the raw, high-res pixels
-        with open(logo_path, "rb") as f:
-            data = base64.b64encode(f.read()).decode("utf-8")
-        
-        st.markdown(
-            f"""
-            <div style="text-align: center;">
-                <img src="data:image/png;base64,{data}" width="250" style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;">
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        # 'use_container_width' prevents Streamlit from shrinking/blurring the file
+        # 'width=250' keeps it a nice size on the screen
+        st.image(logo_path, width=250, use_container_width=False)
+    else:
+        # Fallback if the file isn't found
+        st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
+        st.caption(f"Error: {logo_path} not found. Check GitHub!")
     else:
         st.markdown("<h1 style='text-align: center; color: #9b59b6;'>🌙 LUMA</h1>", unsafe_allow_html=True)
 
