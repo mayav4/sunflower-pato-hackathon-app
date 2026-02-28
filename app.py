@@ -133,8 +133,7 @@ elif page == "Safety Timer":
             if s == 0:
                 st.session_state.emergency_triggered = True
                 st.rerun()
-# --- PAGE 3: BERKELEY BLUE LIGHTS ---
-# --- PAGE 3: BLUE LIGHT MAP (PATHWAYS ADDED) ---
+# --- PAGE 3: BLUE LIGHT MAP (PDF ACCURACY) ---
 elif page == "Berkeley Blue Lights":
     st.header("📍 Interactive Night Safety Map")
     st.write("Zoom in to see exact stop locations and paths.")
@@ -162,7 +161,7 @@ elif page == "Berkeley Blue Lights":
         icon=folium.Icon(color="red", icon="shield", prefix="fa")
     ).add_to(m)
 
-    # 4. Define and Pin Shuttle Stops
+    # 4. Define and Pin Shuttle Stops based on PDF
     stops = [
         {"num": "01", "name": "Moffitt Library", "loc": [37.8727, -122.2606]},
         {"num": "02", "name": "West Circle", "loc": [37.8719, -122.2587]},
@@ -193,12 +192,12 @@ elif page == "Berkeley Blue Lights":
         folium.Marker(
             stop["loc"],
             popup=f"<b>Stop {stop['num']}:</b> {stop['name']}",
-            tooltip=stop["name"],
+            tooltip=stop['name'],
             icon=folium.Icon(color="purple", icon="bus", prefix="fa")
         ).add_to(m)
         
-    # 5. Add Pathways (Polylines)
-    # North Loop (Purple)
+    # 5. Add Pathways (Polylines based on map routes)
+    # North Loop Path (Purple)
     north_path = [
         [37.8727, -122.2606], [37.8719, -122.2587], [37.8735, -122.2670],
         [37.8701, -122.2681], [37.8753, -122.2600], [37.8752, -122.2573],
@@ -206,7 +205,7 @@ elif page == "Berkeley Blue Lights":
     ]
     folium.PolyLine(north_path, color="purple", weight=4, opacity=0.8, tooltip="North Loop (N)").add_to(m)
 
-    # South Loop (Dark Purple)
+    # South Loop Path (Dark Purple)
     south_path = [
         [37.8678, -122.2592], [37.8675, -122.2562], [37.8675, -122.2530],
         [37.8655, -122.2548], [37.8708, -122.2527], [37.8673, -122.2519],
@@ -216,7 +215,7 @@ elif page == "Berkeley Blue Lights":
     ]
     folium.PolyLine(south_path, color="darkpurple", weight=4, opacity=0.8, tooltip="South Loop (S)").add_to(m)
 
-    # 6. Temporary Closure Note
+    # 6. Temporary Closure Note from PDF
     st.warning("⚠️ **Temporary Stop Closure:** 'The Gateway' stop is currently closed due to construction.")
 
     # 7. Pin: Blue Light Phone Locations
